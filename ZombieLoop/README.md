@@ -62,8 +62,6 @@ El juego está diseñado para jugarse cómodamente desde cualquier dispositivo (
 
 ## Capturas de Pantalla
 
-*(Asegúrate de agregar tus capturas en la carpeta `01-zombie-loop/screenshots/`)*
-
 | Pantalla Principal | Exploración de la Mazmorra |
 | :---: | :---: |
 | ![Pantalla de Inicio](./screenshots/inicio.png) | ![Mapa en Vivo](./screenshots/mapa.png) |
@@ -113,4 +111,4 @@ Evaluación realizada durante la prueba cruzada de prototipo:
 ### Mejoras para Versiones Futuras
 * **Audio 8-Bit:** Integración de efectos de sonido sintetizados en Web Audio API para golpes, selección y victoria.
 * **Power-ups / Ítems:** Añadir cofres secretos en el mapa con pociones para recuperar vidas al responder preguntas difíciles.
-* 📈 **Modo de Dificultad:** Selección de nivel (Fácil, Medio, Difícil) incrementando el número de dígitos en las operaciones.
+* **Modo de Dificultad:** Selección de nivel (Fácil, Medio, Difícil) incrementando el número de dígitos en las operaciones.
