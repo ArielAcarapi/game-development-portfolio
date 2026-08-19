@@ -5,14 +5,12 @@ En este repositorio se encuentra todos los juegos desarrollados durante la mater
 
 ![Game Dev Banner](https://img.shields.io/badge/Game_Development-Portfolio-8A2BE2?style=for-the-badge&logo=gamepad)
 
-### ¡Hola! Soy **Ariel Vidal Acarapi Limachi** 👋
-**Estudiante de Game Development & Apasionado del Diseño UX/UI**
+### ¡Hola! Soy **Ariel Vidal Acarapi Limachi**
+**Estudiante de Game Development y apasionado del diseño de videojuegos**
 
 [![GitHub](https://img.shields.io/badge/GitHub-ArielAcarapi-181717?style=flat-square&logo=github)](https://github.com/ArielAcarapi)
-[![GitHub Pages](https://img.shields.io/badge/Portafolio-En_Línea-2ea44f?style=flat-square&logo=githubpages)](https://ArielAcarapi.github.io/game-development-portfolio/)
 
 </div>
-Hola, que tal? Soy Ariel Vidal Acarapi Limachi, estudiante de Game Development y apasionado del Diseño de videojuegos
 
 ## Sobre Mí
 
