@@ -64,11 +64,11 @@ El juego está diseñado para jugarse cómodamente desde cualquier dispositivo (
 
 | Pantalla Principal | Exploración de la Mazmorra |
 | :---: | :---: |
-| ![Pantalla de Inicio](./screenshots/inicio.png) | ![Mapa en Vivo](./screenshots/mapa.png) |
+| ![Pantalla de Inicio](./screenshots/ZombieLoopInicio.jpg) | ![Mapa en Vivo](./screenshots/ZombieLoopExploracion.jpg) |
 
 | Arena de Combate | Pantalla de Resultados |
 | :---: | :---: |
-| ![Sistema de Preguntas](./screenshots/combate.png) | ![Tabla Final](./screenshots/resultado.png) |
+| ![Sistema de Preguntas](./screenshots/ZombieLoopCombate.jpg) | ![Tabla Final](./screenshots/ZombieLoopPantallaFinal.jpg) |
 
 ---
 
