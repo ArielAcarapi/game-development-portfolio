@@ -1,4 +1,4 @@
-# Agualto: El Reto del Agua[cite: 8, 9]
+# Agualto: El Reto del Agua
 
 <div align="center">
 
