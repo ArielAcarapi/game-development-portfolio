@@ -7,7 +7,7 @@
 ![Género](https://img.shields.io/badge/G%C3%A9nero-Arcade_%2F_Roguelike_%2F_Top--Down-orange?style=for-the-badge)
 ![Tecnología](https://img.shields.io/badge/Tech-HTML5_Canvas_%2F_JS-yellow?style=for-the-badge)
 
-[HAGA CLIC AQUÍ PARA JUGAR EN LÍNEA](https://ArielAcarapi.github.io/game-development-portfolio/04-agualto/)
+[HAGA CLIC AQUÍ PARA JUGAR EN LÍNEA](https://ArielAcarapi.github.io/game-development-portfolio/Agualto/)
 
 </div>
 
@@ -64,11 +64,11 @@ El juego está diseñado para ejecutarse en computadoras y laptops mediante tecl
 
 | Pantalla Principal | Exploración del Mapa |
 | :---: | :---: |
-| ![Pantalla de Inicio](./screenshots/inicio.png) | ![Mapa en Vivo](./screenshots/juego.png) |
+| ![Pantalla de Inicio](./screenshots/AgualtoInicio.JPG) | ![Mapa en Vivo](./screenshots/AgualtoJuego.JPG) |
 
 | Estación de Hidratación | Pantalla de Victoria |
 | :---: | :---: |
-| ![Estación de Agua](./screenshots/estacion.png) | ![Pantalla Final](./screenshots/victoria.png) |
+| ![Estación de Agua](./screenshots/AgualtoEstacion.JPG) | ![Pantalla Final](./screenshots/AgualtoVictoria.JPG) |
 
 ---
 
