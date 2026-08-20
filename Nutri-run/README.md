@@ -81,10 +81,3 @@ Entusiasmo, dinamismo y reto. El entorno visual colorido y la retroalimentación
 | :---: | :---: |
 | ![Victoria](./screenshots/Nutri-runVictoria.JPG) | ![Derrota](./screenshots/Nutri-runDerrota.JPG) |
 
----
-
-## Proceso de Desarrollo y Uso de Inteligencia Artificial
-
-### Prompt Utilizado para la Generación
-```text
-Crea un videojuego web 2D en HTML5, CSS3 y JavaScript del género Arcade / Endless Runner titulado 'Nutri-Run: Camino al Colegio' enfocado en educar sobre alimentación saludable a escolares. El jugador controla a un estudiante que corre hacia el colegio durante un tiempo límite de 60 segundos. Debe esquivar comida chatarra (hamburguesas, hot dogs, gaseosas, donas) agachándose o saltando, y recolectar alimentos saludables (manzanas, plátanos, brócoli, zanahorias) para aumentar su barra de energía y velocidad. Incluye un panel lateral de Diario Nutricional que registre el impacto de cada alimento consumido en tiempo real, efectos visuales de partículas, multiplicador de racha (combo) y pantallas de victoria o derrota según el nivel de energía.
