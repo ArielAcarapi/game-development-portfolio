@@ -66,11 +66,11 @@ Clasificar la mayor cantidad posible de residuos orgánicos, papel/cartón y pl�
 
 | Pantalla Principal | Pantalla de Juego |
 | :---: | :---: |
-| ![Pantalla de Inicio](./screenshots/inicio.png) | ![Gameplay](./screenshots/juego.png) |
+| ![Pantalla de Inicio](./screenshots/EcoSortInicio.JPG) | ![Gameplay](./screenshots/EcoSortJuego.JPG) |
 
 | Evento Especial | Pantalla de Game Over |
 | :---: | :---: |
-| ![Evento Corazón](./screenshots/evento.png) | ![Fin de Juego](./screenshots/gameover.png) |
+| ![Evento Corazón](./screenshots/EcoSortEvento.JPG) | ![Fin de Juego](./screenshots/EcoSortGameover.JPG) |
 
 ---
 
