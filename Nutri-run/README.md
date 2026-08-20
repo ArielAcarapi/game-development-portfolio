@@ -75,11 +75,11 @@ Entusiasmo, dinamismo y reto. El entorno visual colorido y la retroalimentación
 
 | Pantalla de Inicio | Carrera y Captura de Alimentos |
 | :---: | :---: |
-| ![Inicio](./screenshots/Nutri-runInicio.png) | ![Gameplay](./screenshots/Nutri-runJuego.png) |
+| ![Inicio](./screenshots/Nutri-runInicio.JPG) | ![Gameplay](./screenshots/Nutri-runJuego.JPG) |
 
 | Llegada al Colegio (Victoria) | Agotamiento de Energía (Derrota) |
 | :---: | :---: |
-| ![Victoria](./screenshots/Nutri-runVictoria.png) | ![Derrota](./screenshots/Nutri-runDerrota.png) |
+| ![Victoria](./screenshots/Nutri-runVictoria.JPG) | ![Derrota](./screenshots/Nutri-runDerrota.JPG) |
 
 ---
 
