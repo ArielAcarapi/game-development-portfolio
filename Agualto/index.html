@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agualto: El Reto del Agua</title>
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:#10131b;color:#fff;font-family:Arial,Helvetica,sans-serif;
+    display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden
+  }
+  #wrap{width:min(1180px,100vw);padding:12px}
+  #gameShell{
+    position:relative;background:#182033;border:2px solid #6f62ff;border-radius:18px;
+    box-shadow:0 0 35px #000;overflow:hidden
+  }
+  canvas{display:block;width:100%;height:auto;background:#202a3b;image-rendering:auto}
+  #hud{
+    position:absolute;left:12px;right:12px;top:10px;display:flex;gap:8px;flex-wrap:wrap;
+    pointer-events:none
+  }
+  .card{
+    background:rgba(10,14,24,.88);border:1px solid rgba(255,255,255,.15);
+    border-radius:10px;padding:7px 10px;font-size:13px;backdrop-filter:blur(5px)
+  }
+  .water{color:#55d8ff;font-weight:bold}.warn{color:#ffd166}.bad{color:#ff6b6b;font-weight:bold}
+  #screen{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:rgba(7,10,18,.72);z-index:5
+  }
+  #panel{
+    width:min(700px,90%);background:#111827;border:2px solid #7467ff;border-radius:20px;
+    padding:26px;box-shadow:0 20px 60px #000;text-align:center
+  }
+  h1{margin:0 0 8px;font-size:34px}.subtitle{color:#aab4cc;line-height:1.5}
+  button{
+    border:0;border-radius:12px;padding:13px 20px;font-weight:bold;font-size:16px;
+    background:#5c52ff;color:white;cursor:pointer;margin:6px
+  }
+  button:hover{transform:translateY(-1px);filter:brightness(1.1)}
+  .tips{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;text-align:left;margin:18px 0}
+  .tip{padding:10px;background:#1b2435;border-radius:10px;color:#dce3f2;font-size:13px}
+  #toast{
+    position:absolute;left:50%;bottom:24px;transform:translateX(-50%);
+    background:rgba(10,14,24,.94);padding:11px 16px;border-radius:12px;
+    opacity:0;transition:.25s;z-index:4;pointer-events:none;border:1px solid #45516d
+  }
+  #toast.show{opacity:1}
+  @media(max-width:700px){h1{font-size:25px}.tips{grid-template-columns:1fr}.card{font-size:11px}}
+</style>
+</head>
+<body>
+<div id="wrap">
+<div id="gameShell">
+<canvas id="game" width="1200" height="700"></canvas>
+<div id="hud"></div>
+<div id="toast"></div>
+<div id="screen">
+  <div id="panel">
+    <h1>💧 AGUALTO</h1>
+    <div class="subtitle">
+      Un arcade roguelike de ritmo acelerado. Demuestra tu resistencia: recorre el mapa, esquiva obstáculos a toda velocidad,
+      administra tu hidratación y alcanza los <b>2.000 ml</b> de agua antes de deshidratarte.
+    </div>
+    <div class="tips">
+      <div class="tip">🎮 <b>WASD / Flechas:</b> Moverte rápidamente</div>
+      <div class="tip">💧 <b>E:</b> Beber agua (+50% energía y +250 ml)</div>
+      <div class="tip">⚡ <b>Espacio:</b> Dash de aceleración</div>
+      <div class="tip">⚠️ La energía se agota velozmente. Si llega al 0%, pierdes.</div>
+    </div>
+    <button id="startBtn">COMENZAR EL DÍA</button>
+  </div>
+</div>
+</div>
+</div>
+
+<script>
+const c=document.getElementById('game'),ctx=c.getContext('2d');
+const W=c.width,H=c.height; const WORLD_W=2400,WORLD_H=1500; const TIME_LIMIT=145;
+const hud=document.getElementById('hud'),screen=document.getElementById('screen'),panel=document.getElementById('panel');
+const toast=document.getElementById('toast'),startBtn=document.getElementById('startBtn');
+
+let keys={},gameOn=false,last=0,elapsed=0,shake=0,toastTimer=0;
+let particles=[],drops=[],obstacles=[],stations=[],foods=[],stars=[];
+let water=0,energy=100,stage=0;
+const dayLength=TIME_LIMIT;
+
+const player={
+ x:95,y:545,w:28,h:44,vx:0,vy:0,speed:420,dash:0,inv:0,anim:0
+};
+
+const phases=[
+ {name:"MAÑANA", from:0,to:38},
+ {name:"MEDIODÍA", from:38,to:77},
+ {name:"TARDE", from:77,to:116},
+ {name:"NOCHE", from:116,to:155}
+];
+
+function phase(){
+  return phases.find(p=>elapsed>=p.from&&elapsed<p.to)||phases[3];
+}
+function say(t){
+ toast.textContent=t;toast.classList.add('show');toastTimer=2.2;
+}
+function reset(){
+ water=0;energy=100;elapsed=0;
+ player.x=90;player.y=WORLD_H-120;player.vx=player.vy=0;player.dash=0;player.inv=0;
+ particles=[];drops=[];obstacles=[];stations=[];foods=[];stars=[];
+ makeWorld();
+}
+function makeWorld(){
+ stations=[
+  {x:180,y:1360,used:false,label:"250 ml"},
+  {x:500,y:1120,used:false,label:"250 ml"},
+  {x:820,y:310,used:false,label:"250 ml"},
+  {x:1110,y:1260,used:false,label:"250 ml"},
+  {x:1390,y:520,used:false,label:"250 ml"},
+  {x:1660,y:1120,used:false,label:"250 ml"},
+  {x:1950,y:280,used:false,label:"250 ml"},
+  {x:2260,y:1270,used:false,label:"250 ml"}
+ ];
+
+ obstacles=[
+  {x:300,y:1180,w:170,h:32,vx:380},
+  {x:650,y:760,w:190,h:30,vx:-420},
+  {x:920,y:420,w:180,h:32,vx:450},
+  {x:1190,y:1030,w:200,h:30,vx:-410},
+  {x:1450,y:300,w:180,h:34,vx:480},
+  {x:1570,y:820,w:220,h:30,vx:-460},
+  {x:1820,y:1180,w:180,h:34,vx:520},
+  {x:2050,y:650,w:220,h:30,vx:-500},
+  {x:2200,y:940,w:150,h:34,vx:440},
+  {x:450,y:300,w:180,h:30,vx:400},
+  {x:1040,y:1330,w:200,h:30,vx:-450},
+  {x:1750,y:470,w:190,h:32,vx:430},
+  {x:200,y:500,w:160,h:30,vx:390},
+  {x:800,y:950,w:180,h:32,vx:-470},
+  {x:1300,y:700,w:210,h:30,vx:510},
+  {x:1600,y:200,w:170,h:32,vx:-430},
+  {x:1900,y:850,w:190,h:34,vx:490},
+  {x:400,y:1350,w:150,h:30,vx:-380},
+  {x:1100,y:200,w:180,h:32,vx:460},
+  {x:2100,y:1100,w:200,h:30,vx:-530}
+ ];
+ foods=[
+  {x:300,y:900,taken:false},{x:720,y:1250,taken:false},
+  {x:1250,y:300,taken:false},{x:1510,y:1250,taken:false},
+  {x:2100,y:400,taken:false}
+ ];
+ stars=[];
+ for(let i=0;i<90;i++) stars.push({x:Math.random()*WORLD_W,y:Math.random()*WORLD_H,s:Math.random()*2+1});
+ drops=[];
+ for(let i=0;i<20;i++) drops.push({x:Math.random()*WORLD_W,y:WORLD_H-40,vy:-Math.random()*20});
+}
+
+function rectHit(a,b){
+ return a.x<a2(b)&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+}
+function a2(b){return b.x+b.w}
+function spawnParticles(x,y,n=12){
+ for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*130,vy:(Math.random()-.5)*130,life:.6+Math.random()*.5,r:2+Math.random()*4});
+}
+function drink(s){
+ if(s.used)return;
+ s.used=true;
+ water+=250;
+ // Ahora recupera el 50% de la energía máxima (50 puntos de energía)
+ energy=Math.min(100, energy+50);
+ spawnParticles(s.x,s.y,20);
+ say("💧 +250 ml (+50% Energía) — Total: "+water+" ml");
+}
+function lose(reason){
+ gameOn=false;
+ screen.style.display='flex';
+ panel.innerHTML=`<h1>⏳ FIN DE LA JORNADA</h1>
+ <div class="subtitle">${reason}</div>
+ <div class="tips">
+ <div class="tip">💧 Hidratación: <b>${water} / 2000 ml</b></div>
+ <div class="tip">📊 Progreso: <b>${Math.round(water/20)}%</b></div>
+ </div>
+ <button onclick="startGame()">INTENTAR DE NUEVO</button>`;
+}
+function win(){
+ gameOn=false;screen.style.display='flex';
+ panel.innerHTML=`<h1>🌊 ¡AGUALTO COMPLETADO!</h1>
+ <div class="subtitle">Lograste mantener el ritmo, aguantar la jornada y alcanzar los <b>2.000 ml</b> de agua.</div>
+ <div class="tips">
+ <div class="tip">💧 <b>2.000 ml</b> recolectados</div>
+ <div class="tip">⚡ Energía final: <b>${Math.round(energy)}%</b></div>
+ </div>
+ <button onclick="startGame()">JUGAR DE NUEVO</button>`;
+}
+function startGame(){reset();screen.style.display='none';gameOn=true;last=performance.now();requestAnimationFrame(loop);say("¡Mantén tu energía alta y recolecta agua!");}
+
+function update(dt){
+ elapsed+=dt;
+ if(elapsed>=dayLength){
+   if(water>=2000)win();
+   else lose("El tiempo finalizó antes de que pudieras completar los 2 litros.");
+   return;
+ }
+
+ const p=phase();
+ stage=phases.indexOf(p);
+
+ const dx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0);
+ const dy=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0);
+ const mag=Math.hypot(dx,dy)||1;
+
+ const migraine=energy<=25;
+ const fatigueMultiplier = energy<=10 ? .50 : (migraine ? .75 : 1);
+ const baseSpeed = player.speed * fatigueMultiplier;
+
+ player.vx=dx/mag*baseSpeed;
+ player.vy=dy/mag*baseSpeed;
+
+ if(player.dash>0)player.dash-=dt;
+ if(keys[" "] && player.dash<=0){
+   player.dash=.32;player.inv=.4;
+   player.vx*=2.2;player.vy*=2.2;
+   spawnParticles(player.x,player.y,10);
+ }
+ player.x+=player.vx*dt*(player.dash>0?1.5:1);
+ player.y+=player.vy*dt*(player.dash>0?1.5:1);
+ player.x=Math.max(25,Math.min(WORLD_W-55,player.x));
+ player.y=Math.max(70,Math.min(WORLD_H-55,player.y));
+ player.inv=Math.max(0,player.inv-dt);
+ player.anim+=dt*12;
+
+ // Desgaste de energía constante y rápido
+ const movementCost=(Math.abs(dx)+Math.abs(dy)>0 ? 3.6 : 1.8);
+ energy-=dt*movementCost;
+
+ if(energy<=0){
+   energy=0;
+   lose("Te quedaste sin energía por agotamiento físico y deshidratación.");
+   return;
+ }
+
+ if(energy<=25 && energy>10 && !player.lowEnergyNotified){
+   player.lowEnergyNotified=true;
+   say("⚠️ Cansancio elevado: tu velocidad ha bajado.");
+ }
+ if(energy>25)player.lowEnergyNotified=false;
+
+ if(energy<=10){
+   if(Math.random()<dt*.35)spawnParticles(player.x,player.y,2);
+ }
+
+ obstacles.forEach(o=>{
+   o.x+=o.vx*dt;
+   if(o.x<20||o.x+o.w>WORLD_W-20)o.vx*=-1;
+
+   const pb={x:player.x-14,y:player.y-22,w:28,h:44};
+   if(player.inv<=0 && rectHit(pb,o)){
+     energy-=28;shake=10;player.inv=.6;
+     say("⚠️ ¡Impacto! Pierdes 28% de energía.");
+     spawnParticles(player.x,player.y,14);
+   }
+ });
+
+ foods.forEach(f=>{
+   if(!f.taken && Math.hypot(player.x-f.x,player.y-f.y)<32){
+     f.taken=true;
+     energy=Math.min(100,energy+20);
+     say("🥪 Snaking rápido: +20% Energía.");
+   }
+ });
+
+ stations.forEach(s=>{
+   if(!s.used && Math.hypot(player.x-s.x,player.y-s.y)<55 && keys.e){
+     drink(s);
+   }
+ });
+
+ if(water>=2000)win();
+
+ particles.forEach(q=>{q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=70*dt;q.life-=dt});
+ particles=particles.filter(q=>q.life>0);
+ shake=Math.max(0,shake-dt*18);
+ if(toastTimer>0){toastTimer-=dt;if(toastTimer<=0)toast.classList.remove('show')}
+ updateHUD();
+}
+
+function updateHUD(){
+ const p=phase(),left=Math.max(0,dayLength-elapsed);
+ const fatigueText = energy<=25 ? "⚠️ CANSANCIO ALTO" : "⚡ ENERGÍA";
+hud.innerHTML=`
+ <div class="card">☀️ <b>${p.name}</b> · ⏱️ ${Math.ceil(left)}s</div>
+ <div class="card water">💧 ${water} / 2000 ml</div>
+ <div class="card ${energy<=25?'bad':''}">${fatigueText} ${Math.max(0,Math.round(energy))}%</div>`;
+}
+function draw(){
+ ctx.save();
+
+ const camX=Math.max(0,Math.min(WORLD_W-W,(player.x-W/2)));
+ const camY=Math.max(0,Math.min(WORLD_H-H,(player.y-H/2)));
+
+ if(shake)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
+
+ const colors=[["#17243a","#243b55"],["#31435b","#8b6d43"],["#493a54","#1e283c"],["#090f21","#151c32"]];
+ const cc=colors[stage];
+ let g=ctx.createLinearGradient(0,0,0,H);
+ g.addColorStop(0,cc[0]);g.addColorStop(1,cc[1]);
+ ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+
+ ctx.save();
+ ctx.translate(-camX,-camY);
+
+ ctx.fillStyle="rgba(20,28,45,.35)";ctx.fillRect(0,0,WORLD_W,WORLD_H);
+ ctx.strokeStyle="rgba(255,255,255,.055)";ctx.lineWidth=2;
+ for(let x=0;x<WORLD_W;x+=60){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,WORLD_H);ctx.stroke()}
+ for(let y=0;y<WORLD_H;y+=60){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(WORLD_W,y);ctx.stroke()}
+
+ stars.forEach(s=>{
+   ctx.globalAlpha=stage===3?.7:.12;ctx.fillStyle="#fff";
+   ctx.beginPath();ctx.arc(s.x,s.y,s.s,0,Math.PI*2);ctx.fill()
+ });
+ ctx.globalAlpha=1;
+
+ stations.forEach(s=>{
+   ctx.save();ctx.translate(s.x,s.y);
+   ctx.globalAlpha=s.used?.3:1;
+   ctx.fillStyle="#49d9ff";ctx.shadowBlur=18;ctx.shadowColor="#49d9ff";
+   ctx.beginPath();ctx.arc(0,0,18+Math.sin(elapsed*4+s.x)*2,0,Math.PI*2);ctx.fill();
+   ctx.shadowBlur=0;
+   ctx.fillStyle="#092033";ctx.fillRect(-7,-12,14,24);
+   ctx.fillStyle="#dff9ff";ctx.fillRect(-3,-9,6,18);
+   ctx.fillStyle="#fff";ctx.font="bold 12px Arial";ctx.textAlign="center";
+   ctx.fillText(s.used?"VACÍA":"E",0,-28);
+   ctx.restore();
+ });
+
+ obstacles.forEach(o=>{
+   ctx.fillStyle="#ff5d6c";ctx.shadowBlur=12;ctx.shadowColor="#ff5d6c";
+   ctx.fillRect(o.x,o.y,o.w,o.h);ctx.shadowBlur=0;
+   ctx.fillStyle="#34151c";
+   for(let x=o.x;x<o.x+o.w;x+=18)ctx.fillRect(x,o.y,8,o.h);
+ });
+
+ foods.forEach(f=>{
+   if(!f.taken){
+     ctx.fillStyle="#ffd166";ctx.beginPath();ctx.arc(f.x,f.y,12,0,Math.PI*2);ctx.fill();
+     ctx.fillStyle="#5d3b18";ctx.font="14px Arial";ctx.textAlign="center";ctx.fillText("⚡",f.x,f.y+5);
+   }
+ });
+
+ drawPlayer();
+
+ particles.forEach(q=>{
+   ctx.globalAlpha=Math.max(0,q.life);ctx.fillStyle="#6be7ff";
+   ctx.beginPath();ctx.arc(q.x,q.y,q.r,0,Math.PI*2);ctx.fill();
+ });
+ ctx.globalAlpha=1;
+
+ ctx.restore();
+
+ if(energy<=25){
+   const intensity=Math.min(0.58,(25-energy)/35+0.16);
+   const grad=ctx.createRadialGradient(W/2,H/2,80,W/2,H/2,Math.max(W,H)*.72);
+   grad.addColorStop(0,"rgba(90,70,130,0)");
+   grad.addColorStop(.45,`rgba(65,35,100,${intensity*.18})`);
+   grad.addColorStop(1,`rgba(20,10,55,${intensity})`);
+   ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+
+   ctx.strokeStyle=`rgba(170,120,220,${intensity*.55})`;
+   ctx.lineWidth=7;
+   ctx.beginPath();
+   ctx.arc(W/2,H/2,Math.min(W,H)*.43+Math.sin(elapsed*7)*8,0,Math.PI*2);
+   ctx.stroke();
+
+   ctx.fillStyle=`rgba(120,80,170,${intensity*.10})`;
+   ctx.fillRect(0,0,W,H);
+
+   ctx.fillStyle="#f0d9ff";ctx.font="bold 13px Arial";ctx.textAlign="center";
+   ctx.fillText("⚠ CANSANCIO EXTREMO · MOVIMIENTO REDUCIDO",W/2,H-82);
+ }
+
+ ctx.fillStyle="rgba(0,0,0,.55)";ctx.fillRect(15,H-60,500,40);
+ ctx.fillStyle="#fff";ctx.font="13px Arial";ctx.textAlign="left";
+ ctx.fillText("WASD/Flechas: mover · E: beber · Espacio: dash · Explora todo el mapa",28,H-35);
+}
+
+function drawPlayer(){
+ const x=player.x,y=player.y, bob=Math.sin(player.anim)*1.5;
+ ctx.save();ctx.translate(x,y+bob);ctx.globalAlpha=player.inv>0?(Math.sin(elapsed*30)*.5+.5):1;
+ ctx.fillStyle="rgba(0,0,0,.35)";ctx.beginPath();ctx.ellipse(0,23,22,7,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#263d67";ctx.fillRect(-11,8,9,22);ctx.fillRect(2,8,9,22);
+ ctx.fillStyle="#121725";ctx.fillRect(-13,28,12,5);ctx.fillRect(2,28,12,5);
+ ctx.fillStyle="#8e98a3";ctx.fillRect(-17,-9,34,27);
+ ctx.fillStyle="#f7f7f5";ctx.fillRect(-9,-7,18,23);
+ ctx.fillStyle="#8e98a3";ctx.fillRect(-23,-6,7,24);ctx.fillRect(16,-6,7,24);
+ ctx.fillStyle="#d89b78";ctx.fillRect(-5,-17,10,8);ctx.beginPath();ctx.arc(0,-25,13,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#241d1d";ctx.beginPath();ctx.arc(0,-31,13,Math.PI,Math.PI*2);ctx.fill();
+ for(let i=-9;i<=9;i+=6){ctx.beginPath();ctx.arc(i,-34-Math.random()*2,4,0,Math.PI*2);ctx.fill()}
+ ctx.fillStyle="#6f7780";ctx.fillRect(-11,-27,9,5);ctx.fillRect(2,-27,9,5);ctx.fillRect(-2,-26,4,2);
+ ctx.restore();
+}
+function loop(t){
+ if(!gameOn)return;
+ const dt=Math.min(.035,(t-last)/1000);last=t;
+ update(dt);draw();requestAnimationFrame(loop);
+}
+window.addEventListener('keydown',e=>{keys[e.key]=true;if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault()});
+window.addEventListener('keyup',e=>keys[e.key]=false);
+startBtn.onclick=startGame;
+updateHUD();draw();
+</script>
+</body>
+</html>
