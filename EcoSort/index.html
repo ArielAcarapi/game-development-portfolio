@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSort: Desafío de Reciclaje</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: #0f172a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Interfaz más grande (640px x 720px) */
+        #game-container {
+            width: 640px;
+            height: 720px;
+            background: linear-gradient(to bottom, #0284c7 0%, #7dd3fc 65%, #4ade80 65%, #15803d 100%);
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            border: 5px solid #334155;
+        }
+
+        /* Título Principal Atractivo en Pantalla de Juego */
+        #game-title-bar {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .main-title {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-transform: uppercase;
+            text-shadow: 
+                3px 3px 0 #166534,
+                -2px -2px 0 #166534,  
+                2px -2px 0 #166534,
+                -2px 2px 0 #166534,
+                0px 6px 10px rgba(0,0,0,0.4);
+            animation: floatTitle 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatTitle {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-3px) scale(1.02); }
+        }
+
+        /* HUD Header */
+        #hud {
+            position: absolute;
+            top: 55px;
+            left: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 12px;
+            backdrop-filter: blur(6px);
+            z-index: 10;
+            font-weight: bold;
+            font-size: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        #lives {
+            color: #ef4444;
+            font-size: 22px;
+        }
+
+        /* Indicador especial de corazón */
+        #heart-notice {
+            position: absolute;
+            top: 110px;
+            width: 100%;
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            color: #be123c;
+            background: rgba(255, 241, 242, 0.95);
+            padding: 6px 0;
+            z-index: 9;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+            border-y: 2px solid #fb7185;
+        }
+
+        /* Residuo / Corazón en caída */
+        #active-waste {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            z-index: 5;
+            border: 3px solid rgba(255,255,255,0.9);
+        }
+
+        #active-waste.is-heart {
+            background-color: #ffe4e6;
+            border: 3px solid #f43f5e;
+            animation: pulse 0.6s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15); }
+        }
+
+        /* Botes de basura FIJOS (Más grandes) */
+        #bins-container {
+            position: absolute;
+            bottom: 25px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 15px;
+            z-index: 6;
+        }
+
+        .bin {
+            width: 175px;
+            height: 120px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.35);
+            border: 3px solid rgba(255,255,255,0.4);
+            transition: transform 0.2s;
+        }
+
+        .bin-icon {
+            font-size: 38px;
+            margin-bottom: 4px;
+        }
+
+        #bin-organic { background-color: #78350f; }
+        #bin-paper { background-color: #1d4ed8; }
+        #bin-plastic { background-color: #ca8a04; }
+
+        .bin.target-heart {
+            border: 4px solid #ff0055 !important;
+            box-shadow: 0 0 20px #ff0055 !important;
+            animation: highlightBin 0.5s infinite alternate;
+        }
+
+        @keyframes highlightBin {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.06); }
+        }
+
+        /* Feedback Popups (¡Perfecto! / ¡Fallaste!) */
+        .feedback-pop {
+            position: absolute;
+            font-size: 26px;
+            font-weight: 900;
+            pointer-events: none;
+            z-index: 15;
+            animation: floatAndFade 0.9s ease-out forwards;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .feedback-success {
+            color: #22c55e;
+        }
+
+        .feedback-fail {
+            color: #ef4444;
+        }
+
+        @keyframes floatAndFade {
+            0% { opacity: 1; transform: translateY(0) scale(0.8); }
+            50% { opacity: 1; transform: translateY(-25px) scale(1.2); }
+            100% { opacity: 0; transform: translateY(-50px) scale(1); }
+        }
+
+        /* Indicador de Controles */
+        #controls-hint {
+            position: absolute;
+            bottom: 4px;
+            width: 100%;
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: bold;
+            z-index: 7;
+        }
+
+        /* Pantallas / Modales */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.92);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            z-index: 20;
+        }
+
+        .overlay h1 {
+            font-size: 42px;
+            color: #4ade80;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .overlay p {
+            font-size: 17px;
+            color: #cbd5e1;
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .score-board {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            width: 100%;
+            font-size: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .btn {
+            background-color: #22c55e;
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4);
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn:hover {
+            background-color: #16a34a;
+            transform: translateY(-2px);
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <!-- Banner del Título del Juego -->
+        <div id="game-title-bar">
+            <div class="main-title">♻️ EcoSort ♻️</div>
+        </div>
+
+        <!-- HUD -->
+        <div id="hud">
+            <div>Puntos: <span id="score-display">0</span></div>
+            <div id="lives">Vidas: <span id="lives-display">❤️❤️❤️</span></div>
+        </div>
+
+        <!-- Aviso para eventos de Corazón -->
+        <div id="heart-notice" class="hidden">¡Acomoda el ❤️ en el bote indicado para ganar 1 vida!</div>
+
+        <!-- Botes de basura FIJOS en el suelo -->
+        <div id="bins-container">
+            <div class="bin" id="bin-organic" data-type="organic">
+                <span class="bin-icon">🍂</span>
+                <span>Orgánicos</span>
+            </div>
+            <div class="bin" id="bin-paper" data-type="paper">
+                <span class="bin-icon">📦</span>
+                <span>Papel / Cartón</span>
+            </div>
+            <div class="bin" id="bin-plastic" data-type="plastic">
+                <span class="bin-icon">🥤</span>
+                <span>Plásticos</span>
+            </div>
+        </div>
+
+        <div id="controls-hint">Usa ⬅️ ➡️ o A / D para mover la basura</div>
+
+        <!-- Pantalla de Inicio -->
+        <div id="start-screen" class="overlay">
+            <h1>EcoSort</h1>
+            <p>Usa <strong>flechas izquierda/derecha</strong> (o <strong>A / D</strong>) para mover los residuos que caen.</p>
+            <p>⚠️ <strong>Atención:</strong> ¡Cada acierto sube la velocidad y perder vidas la acelera aún más!</p>
+            <p>❤️ Cada cierto tiempo caerá un corazón hacia un bote específico. ¡Si lo encajas ganas 1 vida!</p>
+            <button class="btn" id="start-btn">¡Empezar Juego!</button>
+        </div>
+
+        <!-- Pantalla de Game Over -->
+        <div id="game-over-screen" class="overlay hidden">
+            <h1>¡Juego Terminado!</h1>
+            <div class="score-board">
+                <div>Puntuación obtenida: <strong id="final-score">0</strong></div>
+                <div style="margin-top: 8px;">Máximo Récord: <strong id="high-score">0</strong></div>
+            </div>
+            <button class="btn" id="restart-btn">Jugar de nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        const BIN_TYPES = ['organic', 'paper', 'plastic'];
+        const BIN_NAMES = {
+            organic: 'Orgánicos 🍂',
+            paper: 'Papel / Cartón 📦',
+            plastic: 'Plásticos 🥤'
+        };
+
+        const WASTE_TYPES = [
+            { icon: '🍎', type: 'organic' },
+            { icon: '🍌', type: 'organic' },
+            { icon: '🍕', type: 'organic' },
+            { icon: '📄', type: 'paper' },
+            { icon: '📰', type: 'paper' },
+            { icon: '📦', type: 'paper' },
+            { icon: '🥤', type: 'plastic' },
+            { icon: '🧴', type: 'plastic' },
+            { icon: '🛍️', type: 'plastic' }
+        ];
+
+        let score = 0;
+        let lives = 3;
+        const maxLives = 5;
+        let highScore = localStorage.getItem('ecosort_highscore') || 0;
+        let gameActive = false;
+        
+        // Dificultad ajustada (Base inicial más veloz y ritmo fluido)
+        let fallSpeed = 2.8;
+        const maxFallSpeed = 9.0; 
+        const horizontalSpeed = 9.0;
+
+        let itemsSinceLastHeart = 0;
+        const heartInterval = 7; 
+
+        let waste = {
+            x: 290,
+            y: 120,
+            width: 60,
+            type: null,
+            isHeart: false,
+            targetBin: null,
+            element: null
+        };
+
+        const keys = { left: false, right: false };
+
+        const container = document.getElementById('game-container');
+        const scoreDisplay = document.getElementById('score-display');
+        const livesDisplay = document.getElementById('lives-display');
+        const heartNotice = document.getElementById('heart-notice');
+        const startScreen = document.getElementById('start-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const highScoreDisplay = document.getElementById('high-score');
+
+        const bins = {
+            organic: document.getElementById('bin-organic'),
+            paper: document.getElementById('bin-paper'),
+            plastic: document.getElementById('bin-plastic')
+        };
+
+        window.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
+        });
+
+        window.addEventListener('keyup', e => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
+        });
+
+        document.getElementById('start-btn').addEventListener('click', startGame);
+        document.getElementById('restart-btn').addEventListener('click', startGame);
+
+        function startGame() {
+            score = 0;
+            lives = 3;
+            fallSpeed = 2.8;
+            itemsSinceLastHeart = 0;
+            gameActive = true;
+
+            scoreDisplay.textContent = score;
+            updateLivesDisplay();
+            clearHighlights();
+
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+
+            spawnWaste();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function gameLoop() {
+            if (!gameActive) return;
+
+            if (keys.left && waste.x > 10) {
+                waste.x -= horizontalSpeed;
+            }
+            if (keys.right && waste.x < container.clientWidth - waste.width - 10) {
+                waste.x += horizontalSpeed;
+            }
+
+            waste.y += fallSpeed;
+
+            if (waste.element) {
+                waste.element.style.left = waste.x + 'px';
+                waste.element.style.top = waste.y + 'px';
+            }
+
+            const binsY = container.clientHeight - 145;
+            if (waste.y >= binsY) {
+                checkBinCollision();
+            } else {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        function clearHighlights() {
+            BIN_TYPES.forEach(t => bins[t].classList.remove('target-heart'));
+            heartNotice.classList.add('hidden');
+        }
+
+        function spawnWaste() {
+            if (waste.element) {
+                waste.element.remove();
+            }
+
+            clearHighlights();
+
+            itemsSinceLastHeart++;
+            const shouldSpawnHeart = (itemsSinceLastHeart >= heartInterval);
+
+            const el = document.createElement('div');
+            el.id = 'active-waste';
+
+            if (shouldSpawnHeart) {
+                itemsSinceLastHeart = 0;
+                waste.isHeart = true;
+                waste.type = 'heart';
+                
+                const randomTarget = BIN_TYPES[Math.floor(Math.random() * BIN_TYPES.length)];
+                waste.targetBin = randomTarget;
+
+                el.textContent = '❤️';
+                el.classList.add('is-heart');
+
+                bins[randomTarget].classList.add('target-heart');
+                heartNotice.textContent = `¡Encaja el ❤️ en el bote de ${BIN_NAMES[randomTarget]}!`;
+                heartNotice.classList.remove('hidden');
+            } else {
+                waste.isHeart = false;
+                waste.targetBin = null;
+                
+                const randomItem = WASTE_TYPES[Math.floor(Math.random() * WASTE_TYPES.length)];
+                waste.type = randomItem.type;
+                el.textContent = randomItem.icon;
+            }
+
+            waste.x = (container.clientWidth - waste.width) / 2;
+            waste.y = 120;
+            waste.element = el;
+
+            el.style.left = waste.x + 'px';
+            el.style.top = waste.y + 'px';
+
+            container.appendChild(el);
+        }
+
+        // Animación flotante de feedback
+        function showFeedback(text, isSuccess, x, y) {
+            const pop = document.createElement('div');
+            pop.className = `feedback-pop ${isSuccess ? 'feedback-success' : 'feedback-fail'}`;
+            pop.textContent = text;
+            pop.style.left = (x - 40) + 'px';
+            pop.style.top = y + 'px';
+            container.appendChild(pop);
+
+            setTimeout(() => pop.remove(), 900);
+        }
+
+        function checkBinCollision() {
+            const organicBox = bins.organic.getBoundingClientRect();
+            const paperBox = bins.paper.getBoundingClientRect();
+            const plasticBox = bins.plastic.getBoundingClientRect();
+
+            const wasteCenterX = waste.x + (waste.width / 2);
+            const containerLeft = container.getBoundingClientRect().left;
+            const absoluteWasteX = containerLeft + wasteCenterX;
+
+            let landedBinType = null;
+
+            if (absoluteWasteX >= organicBox.left && absoluteWasteX <= organicBox.right) {
+                landedBinType = 'organic';
+            } else if (absoluteWasteX >= paperBox.left && absoluteWasteX <= paperBox.right) {
+                landedBinType = 'paper';
+            } else if (absoluteWasteX >= plasticBox.left && absoluteWasteX <= plasticBox.right) {
+                landedBinType = 'plastic';
+            }
+
+            const popY = container.clientHeight - 180;
+
+            if (waste.isHeart) {
+                if (landedBinType === waste.targetBin) {
+                    if (lives < maxLives) {
+                        lives++;
+                        updateLivesDisplay();
+                    }
+                    score += 15;
+                    scoreDisplay.textContent = score;
+                    showFeedback('¡PERFECTO! ❤️', true, waste.x, popY);
+                } else {
+                    showFeedback('¡FALLASTE! ❌', false, waste.x, popY);
+                    loseLife();
+                }
+            } else {
+                if (landedBinType === waste.type) {
+                    score += 10;
+                    scoreDisplay.textContent = score;
+                    showFeedback('¡PERFECTO! ✨', true, waste.x, popY);
+
+                    // Incremento controlado por acierto
+                    if (fallSpeed < maxFallSpeed) {
+                        fallSpeed += 0.22;
+                    }
+                } else {
+                    showFeedback('¡FALLASTE! ❌', false, waste.x, popY);
+                    loseLife();
+                }
+            }
+
+            if (waste.element) {
+                waste.element.remove();
+                waste.element = null;
+            }
+
+            clearHighlights();
+
+            if (gameActive) {
+                setTimeout(() => {
+                    spawnWaste();
+                    requestAnimationFrame(gameLoop);
+                }, 250);
+            }
+        }
+
+        function loseLife() {
+            lives--;
+            updateLivesDisplay();
+
+            // Incremento extra al fallar
+            if (fallSpeed < maxFallSpeed) {
+                fallSpeed = Math.min(maxFallSpeed, fallSpeed + 0.5);
+            }
+
+            if (lives <= 0) {
+                endGame();
+            }
+        }
+
+        function updateLivesDisplay() {
+            livesDisplay.textContent = '❤️'.repeat(Math.max(0, lives));
+        }
+
+        function endGame() {
+            gameActive = false;
+            clearHighlights();
+
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('ecosort_highscore', highScore);
+            }
+
+            finalScoreDisplay.textContent = score;
+            highScoreDisplay.textContent = highScore;
+            gameOverScreen.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
