@@ -7,7 +7,7 @@
 ![Género](https://img.shields.io/badge/G%C3%A9nero-Arcade_%2F_Puzzle_%2F_RPG-orange?style=for-the-badge)
 ![Tecnología](https://img.shields.io/badge/Tech-HTML5_Canvas_%2F_JS-yellow?style=for-the-badge)
 
-[HAGA CLIC AQUÍ PARA JUGAR EN LÍNEA](https://ArielAcarapi.github.io/game-development-portfolio/01-zombie-loop/)
+[HAGA CLIC AQUÍ PARA JUGAR EN LÍNEA](https://ArielAcarapi.github.io/game-development-portfolio/ZombieLoop/)
 
 </div>
 
