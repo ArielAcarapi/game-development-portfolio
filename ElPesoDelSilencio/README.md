@@ -80,20 +80,3 @@ El juego aplica el principio **"Show don't tell"**, evitando mensajes moralizant
 | Filtrado de Memoria | Pantalla Final |
 | :---: | :---: |
 | ![Fase 2](./screenshots/ElPesoDelSilencioFiltrado.png) | ![Final](./screenshots/ElPesoDelSilecioFinal.png) |
-
----
-
-### Registro de Mejoras e Iteraciones
-
-| Versión | Problema Detectado | Acción Realizada | Resultado |
-| :---: | :--- | :--- | :--- |
-| **V1** | Las pantallas eran demasiado estáticas y no transmitían la sensación de un dispositivo dañado. | Se agregaron animaciones de distorsión (*glitch*) y transiciones visuales en CSS. | Ambiente de sistema operativo corrupto más inmersivo. |
-| **V2** | La progresión narrativa no mostraba el impacto emocional en el sistema. | Se implementó una barra dinámica que incrementa el peso emocional según las evidencias recuperadas. | Feedback visual claro del avance de la historia. |
-| **V3** | Las opciones de interacción resultaban ambiguas en la fase final. | Se simplificó la interfaz del archivo de audio con botones de acción directa. | Experiencia fluida y enfocada en el desenlace emocional. |
-
----
-
-### Mejoras para Versiones Futuras
-* **Efectos de Sonido Realistas:** Incorporar pistas de audio para las pulsaciones de botones y efectos sintéticos de interferencia digital.
-* **Mayor variedad de Puzzles:** Añadir desencriptación de imágenes fragmentadas en la Fase 2.
-* **Líneas de Diálogo Adicionales:** Expandir los borradores de mensajes para profundizar en la perspectiva de los personajes secundarios.
