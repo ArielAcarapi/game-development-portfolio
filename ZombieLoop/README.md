@@ -69,27 +69,3 @@ El juego está diseñado para jugarse cómodamente desde cualquier dispositivo (
 | Arena de Combate | Pantalla de Resultados |
 | :---: | :---: |
 | ![Sistema de Preguntas](./screenshots/ZombieLoopCombate.JPG) | ![Tabla Final](./screenshots/ZombieLoopPantallaFinal.JPG) |
-
----
-
-### Registro de Mejoras e Iteraciones
-
-| Versión | Problema Detectado | Acción Realizada | Resultado |
-| :---: | :--- | :--- | :--- |
-| **V1** | El movimiento del jugador en el mapa era rígido y saltaba de casilla en casilla bruscamente. | Se implementó un algoritmo de interpolación suave por sub-tiles (*eased lerp*) con efecto de rebote (*bobding*) y partículas de polvo. | Movimiento fluido y visualmente atractivo. |
-| **V2** | Las restas generaban ocasionalmente números negativos inadecuados para el nivel escolar. | Se ajustó la lógica de generación del banco de preguntas asegurando minuendos mayores que los sustraendos. | Operaciones adaptadas al público objetivo. |
-| **V3** | En pantallas pequeñas la arena de combate se recortaba y no se leían bien las opciones. | Se aplicaron consultas de medios CSS (*Media Queries*) y tamaños fluidos con `clamp()`. | Interfaz 100% responsiva para computadoras y móviles. |
-
----
-
-## Aprendizajes y Mejoras Futuras
-
-### Aprendizajes Clave
-* Implementación de gráficos *Pixel Art* generados totalmente por código Canvas sin depender de assets externos.
-* Manejo de estados de juego complejos (Navegación del mapa, Pausa de combate, Animaciones de feedback y Pantallas de fin de juego).
-* Diseño UX/UI adaptado al estilo retro de los juegos de 8 bits.
-
-### Mejoras para Versiones Futuras
-* **Audio 8-Bit:** Integración de efectos de sonido sintetizados en Web Audio API para golpes, selección y victoria.
-* **Power-ups / Ítems:** Añadir cofres secretos en el mapa con pociones para recuperar vidas al responder preguntas difíciles.
-* **Modo de Dificultad:** Selección de nivel (Fácil, Medio, Difícil) incrementando el número de dígitos en las operaciones.
