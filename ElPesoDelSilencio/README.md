@@ -73,13 +73,13 @@ El juego aplica el principio **"Show don't tell"**, evitando mensajes moralizant
 
 ## Capturas de Pantalla
 
-| Pantalla de Inicio | Fase 1: Ordenamiento de Archivos |
+| Pantalla de Inicio | Ordenamiento de Archivos |
 | :---: | :---: |
-| ![Inicio](./screenshots/inicio.png) | ![Fase 1](./screenshots/fase1.png) |
+| ![Inicio](./screenshots/ElPesoDelSilencioInicio.png) | ![Fase 1](./screenshots/ElPesoDelSilecioOrdenamiento.png) |
 
-| Fase 2: Filtrado de Memoria | Pantalla Final |
+| Filtrado de Memoria | Pantalla Final |
 | :---: | :---: |
-| ![Fase 2](./screenshots/fase2.png) | ![Final](./screenshots/final.png) |
+| ![Fase 2](./screenshots/ElPesoDelSilencioFiltrado.png) | ![Final](./screenshots/ElPesoDelSilecioFinal.png) |
 
 ---
 
