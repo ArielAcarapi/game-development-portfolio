@@ -72,10 +72,6 @@ El juego está diseñado para jugarse cómodamente desde cualquier dispositivo (
 
 ---
 
-## Desarrollo con IA Generativa e Iteraciones
-
-Este videojuego fue desarrollado integrando herramientas de **Inteligencia Artificial Generativa** para el diseño de lógica, generación de código web y estructuración de código Pixel Art dinámico mediante código JavaScript (renderizado matricial sin imágenes externas pesadas).
-
 ### Registro de Mejoras e Iteraciones
 
 | Versión | Problema Detectado | Acción Realizada | Resultado |
@@ -83,21 +79,6 @@ Este videojuego fue desarrollado integrando herramientas de **Inteligencia Artif
 | **V1** | El movimiento del jugador en el mapa era rígido y saltaba de casilla en casilla bruscamente. | Se implementó un algoritmo de interpolación suave por sub-tiles (*eased lerp*) con efecto de rebote (*bobding*) y partículas de polvo. | Movimiento fluido y visualmente atractivo. |
 | **V2** | Las restas generaban ocasionalmente números negativos inadecuados para el nivel escolar. | Se ajustó la lógica de generación del banco de preguntas asegurando minuendos mayores que los sustraendos. | Operaciones adaptadas al público objetivo. |
 | **V3** | En pantallas pequeñas la arena de combate se recortaba y no se leían bien las opciones. | Se aplicaron consultas de medios CSS (*Media Queries*) y tamaños fluidos con `clamp()`. | Interfaz 100% responsiva para computadoras y móviles. |
-
----
-
-## Tabla de Validación y Pruebas (Peer Review)
-
-Evaluación realizada durante la prueba cruzada de prototipo:
-
-| Elemento Evaluado | Cumplimiento | Observaciones / Resultado |
-| :--- | :---: | :--- |
-| **Inicio correcto** | Sí | Carga de manera rápida sin errores en consola. |
-| **Comprensión del juego** | Sí | Las instrucciones en la portada son claras. |
-| **4 alternativas por pregunta** | Sí | Cada pregunta presenta 1 respuesta correcta y 3 distractores lógicos. |
-| **Feedback de respuesta** | Sí | Muestra animación de ataque e indicadores visuales en verde o rojo. |
-| **Actualización de puntaje** | Sí | El marcador HUD y la barra de progreso responden inmediatamente. |
-| **Pantalla y resumen final** | Sí | Presenta el puntaje sobre 10 y un desglose detallado de las respuestas. |
 
 ---
 
