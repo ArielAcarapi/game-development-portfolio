@@ -1,4 +1,7 @@
 # Defensa del Bolsillo Central
+<p align="center">
+  <img src="/Imagenes/Banner.jpg" width="100%" alt="Header Banner"/>
+</p>
 
 [![Estado](https://img.shields.io/badge/Estado-Jugable-brightgreen?style=flat-square)](#)
 [![Plataforma](https://img.shields.io/badge/Plataforma-Navegador_Web-blue?style=flat-square)](#)
