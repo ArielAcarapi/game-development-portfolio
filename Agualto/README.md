@@ -1,4 +1,7 @@
 # Agualto: El Reto del Agua
+<p align="center">
+  <img src="/Imagenes/Banner.jpg" width="100%" alt="Header Banner"/>
+</p>
 
 <div align="center">
 
