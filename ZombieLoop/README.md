@@ -1,4 +1,7 @@
 # Zombie Loop: Mazmorra Matemática
+<p align="center">
+  <img src="/Imagenes/Banner.jpg" width="100%" alt="Header Banner"/>
+</p>
 
 <div align="center">
 
