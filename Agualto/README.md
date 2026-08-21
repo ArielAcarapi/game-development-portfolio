@@ -69,27 +69,3 @@ El juego está diseñado para ejecutarse en computadoras y laptops mediante tecl
 | Estación de Hidratación | Pantalla de Victoria |
 | :---: | :---: |
 | ![Estación de Agua](./screenshots/AgualtoEstacion.JPG) | ![Pantalla Final](./screenshots/AgualtoVictoria.JPG) |
-
----
-
-### Registro de Mejoras e Iteraciones
-
-| Versión | Problema Detectado | Acción Realizada | Resultado |
-| :---: | :--- | :--- | :--- |
-| **V1** | El mapa era reducido y la recolección de agua no representaba un reto de exploración. | Se expandió el escenario a 2400x1500 píxeles con cámara de seguimiento fluido. | Obliga al jugador a navegar y planificar su ruta urbana. |
-| **V2** | No se percibía el impacto físico real de la deshidratación en el gameplay. | Se implementó la penalización de velocidad y el filtro radial por fatiga al bajar del 25% de energía. | Transmite visualmente la sensación de cansancio extremo. |
-| **V3** | Las estaciones no recuperaban suficiente vitalidad para justificar el uso del *dash*. | Se ajustó la recarga a +250 ml de agua y +50% de energía inmediata. | Experiencia de juego más equilibrada y competitiva. |
-
----
-
-## Aprendizajes y Mejoras Futuras
-
-### Aprendizajes Clave
-* Implementación de sistemas de cámara 2D con desplazamiento y límites de mundo en HTML5 Canvas.
-* Diseños de mecánicas de juego donde los estados de vitalidad alteran directamente los parámetros de movilidad y renderizado visual.
-* Estructuración de bucles de juego estilo *Roguelike* adaptados a sesiones cortas para navegador web.
-
-### Mejoras para Versiones Futuras
-* **Minimapa:** Inclusión de un radar en la esquina de la pantalla para ubicar las estaciones disponibles.
-* **Efectos de Audio:** Integración de sonido sintetizado para el paso de fases, colisiones y recarga de agua.
-* **Tabla de Marcadores:** Registro local y en línea de los mejores tiempos de finalización.
