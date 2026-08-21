@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Defensa del Bolsillo Central</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#070d16;
+    --bg-panel:#0e1a2b;
+    --bg-panel-2:#12233a;
+    --line: rgba(124,141,166,0.25);
+    --mint:#2fe6b0;
+    --mint-dim: rgba(47,230,176,0.16);
+    --gold:#f5c542;
+    --gold-dim: rgba(245,197,66,0.16);
+    --blue:#7ca8ff;
+    --blue-dim: rgba(124,168,255,0.16);
+    --purple:#c9a0ff;
+    --danger:#ff5a6e;
+    --danger-dim: rgba(255,90,110,0.15);
+    --text:#eaf2f5;
+    --text-dim:#a0b1c9;
+    --text-dim2:#6e85a3;
+    --radius:14px;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; background:var(--bg-deep); color:var(--text);
+    font-family:var(--font-body);
+    -webkit-tap-highlight-color: transparent;
+    overflow-x:hidden;
+  }
+  body{
+    min-height:100vh;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding: 22px 12px 60px;
+    background:
+      radial-gradient(1100px 600px at 20% -10%, rgba(47,230,176,0.12), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(124,168,255,0.1), transparent 55%),
+      var(--bg-deep);
+  }
+
+  .app{ width:100%; max-width:920px; }
+
+  /* ---------- HEADER ---------- */
+  .brand{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-bottom:14px; padding: 0 4px;
+    flex-wrap:wrap; gap:6px;
+  }
+  .brand h1{
+    font-family:var(--font-display); font-weight:700; font-size:22px; margin:0;
+    letter-spacing:-0.02em;
+  }
+  .brand h1 span{ color:var(--mint); }
+  .brand p{ margin:2px 0 0; color:var(--text-dim); font-size:12.5px; }
+
+  /* ---------- GAME PANEL ---------- */
+  .panel{
+    background: linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--line);
+    border-radius: 20px;
+    padding: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    padding: 8px 10px; margin-bottom:10px;
+    background: rgba(0,0,0,0.4);
+    border:1px solid var(--line); border-radius: 12px;
+  }
+  .stat{
+    display:flex; align-items:center; gap:8px;
+    padding:5px 10px 5px 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius:10px;
+    min-width: 140px;
+  }
+  .stat .ic{ font-size:18px; width:26px; text-align:center; filter: drop-shadow(0 0 6px rgba(0,0,0,0.6)); }
+  .stat .info{ flex:1; min-width:0; }
+  .stat .label{ font-size:9.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); font-weight:700; }
+  .stat .val{ font-family:var(--font-mono); font-weight:700; font-size:14px; line-height:1.3; }
+  .stat.reserva .val{ color:var(--mint); }
+  .stat.capital .val{ color:var(--gold); }
+  .barwrap{ position:relative; height:6px; border-radius:4px; background:rgba(255,255,255,0.12); overflow:hidden; margin-top:3px; width:100%; }
+  .barfill{ position:absolute; inset:0 auto 0 0; width:100%; border-radius:4px; transition: width .35s ease, background-color .4s ease; background: var(--mint); }
+
+  .wavepill{
+    font-family:var(--font-mono); font-weight:700; font-size:13px;
+    padding:7px 12px; border-radius:10px; background: var(--blue-dim); color:var(--blue);
+    border:1px solid rgba(124,168,255,0.4);
+    white-space:nowrap;
+  }
+
+  .spacer{ flex:1; }
+
+  .iconbtn{
+    width:36px; height:36px; border-radius:10px; border:1px solid var(--line);
+    background: rgba(255,255,255,0.06); color:var(--text); cursor:pointer;
+    font-size:16px; display:flex; align-items:center; justify-content:center;
+    transition: background .15s, transform .1s, border-color .15s;
+  }
+  .iconbtn:hover{ background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
+  .iconbtn:active{ transform: scale(0.92); }
+  .iconbtn.on{ background: var(--mint-dim); border-color: rgba(47,230,176,0.6); color:var(--mint); }
+
+  /* ---------- STAGE ---------- */
+  .stage{
+    position:relative; border-radius:14px; overflow:hidden;
+    background:
+      radial-gradient(600px 340px at 50% 20%, rgba(124,168,255,0.1), transparent 65%),
+      #091321;
+    border:1px solid var(--line);
+  }
+  #gamecanvas{ display:block; width:100%; height:auto; cursor:pointer; }
+
+  .prep-banner{
+    position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    background: rgba(6,12,20,0.92); border:1px solid var(--line); backdrop-filter: blur(6px);
+    padding:8px 14px; border-radius:12px; display:flex; align-items:center; gap:10px;
+    font-size:12.5px; color:var(--text-dim); max-width: 92%; z-index: 4;
+    animation: fadeDown .35s ease;
+  }
+  @keyframes fadeDown{ from{opacity:0; transform:translate(-50%,-8px);} to{opacity:1; transform:translate(-50%,0);} }
+  .prep-banner b{ color:var(--gold); font-family:var(--font-mono); }
+  .prep-banner button{
+    font-family:var(--font-body); font-weight:700; font-size:12px; border:none; cursor:pointer;
+    background: var(--mint); color:#04241a; padding:7px 12px; border-radius:8px;
+    transition: transform .1s, filter .15s;
+  }
+  .prep-banner button:hover{ filter:brightness(1.08); }
+  .prep-banner button:active{ transform: scale(0.95); }
+
+  .toast{
+    position:absolute; bottom:12px; left:50%; transform:translateX(-50%);
+    background: rgba(255,90,110,0.22); border:1px solid rgba(255,90,110,0.6);
+    color:#ffffff; padding:7px 14px; border-radius:10px; font-size:12.5px; font-weight:600;
+    opacity:0; pointer-events:none; transition: opacity .2s, transform .2s; z-index:10;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(-4px); }
+
+  /* tower popup */
+  .tpop{
+    position:absolute; background: rgba(8,15,26,0.96); border:1px solid var(--line);
+    border-radius:12px; padding:10px; width:195px; font-size:12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.7); z-index:5;
+    display:none;
+  }
+  .tpop.show{ display:block; }
+  .tpop .th{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .tpop .th .ic{ font-size:18px; }
+  .tpop .th .nm{ font-family:var(--font-display); font-weight:700; font-size:13px; }
+  .tpop .th .lvl{ margin-left:auto; font-family:var(--font-mono); font-size:10.5px; color:var(--text-dim); }
+  .tpop .stats{ color:var(--text-dim); font-size:11px; line-height:1.6; margin-bottom:8px; }
+  .tpop .stats b{ color:var(--text); }
+  .tpop .hpbar{ height:5px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden; margin:4px 0 8px; }
+  .tpop .hpbarfill{ height:100%; background:var(--mint); transition:width 0.2s; }
+  .tpop .row{ display:flex; gap:6px; }
+  .tpop button{
+    flex:1; font-family:var(--font-body); font-weight:700; font-size:11.5px; cursor:pointer;
+    border-radius:8px; padding:7px 4px; border:1px solid var(--line); background: rgba(255,255,255,0.08); color:var(--text);
+    transition: background .15s, opacity .15s;
+  }
+  .tpop button.up{ background: var(--mint-dim); border-color: rgba(47,230,176,0.5); color:var(--mint); }
+  .tpop button.sell{ background: var(--danger-dim); border-color: rgba(255,90,110,0.5); color:var(--danger); }
+  .tpop button:disabled{ opacity:0.4; cursor:not-allowed; }
+  .tpop button:hover:not(:disabled){ filter:brightness(1.15); }
+
+  /* ---------- SHOP ---------- */
+  .shop{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:8px; margin-top:10px;
+  }
+  .card{
+    background: rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:12px;
+    padding:9px 10px; cursor:pointer; text-align:left;
+    transition: border-color .15s, background .15s, transform .1s;
+    position:relative;
+  }
+  .card:hover{ background: rgba(255,255,255,0.09); }
+  .card:active{ transform: scale(0.98); }
+  .card.armed{ border-color: var(--mint); background: var(--mint-dim); box-shadow: 0 0 0 1px var(--mint) inset; }
+  .card.poor{ opacity:0.45; cursor:not-allowed; }
+  .card .top{ display:flex; align-items:center; gap:8px; }
+  .card .ic{ font-size:20px; }
+  .card .nm{ font-family:var(--font-display); font-weight:700; font-size:12px; }
+  .card .key{ margin-left:auto; font-family:var(--font-mono); font-size:9px; color:var(--text-dim2); border:1px solid var(--line); border-radius:5px; padding:1px 5px; }
+  .card .desc{ font-size:10px; color:var(--text-dim); margin:5px 0 6px; line-height:1.3; min-height:26px; }
+  .card .cost{ font-family:var(--font-mono); font-weight:700; font-size:12px; color:var(--gold); }
+
+  /* ---------- TICKER ---------- */
+  .ticker{
+    margin-top:10px; padding:8px 12px; border-radius:10px;
+    background: rgba(245,197,66,0.08); border:1px solid rgba(245,197,66,0.25);
+    font-size:11.5px; color:#f0e2b8; display:flex; gap:8px; align-items:flex-start;
+  }
+  .ticker .bulb{ font-size:14px; flex-shrink:0; }
+
+  /* ---------- OVERLAYS ---------- */
+  .overlay{
+    position:absolute; inset:0; z-index:20;
+    background: radial-gradient(700px 500px at 50% 20%, rgba(18,35,58,0.98), rgba(4,9,15,0.99));
+    display:flex; align-items:center; justify-content:center; padding:22px;
+    animation: fadeIn .3s ease;
+  }
+  @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+  .ovcard{ max-width: 520px; width:100%; text-align:center; }
+  .ovcard .emoji{ font-size:44px; margin-bottom:6px; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.6)); }
+  .ovcard h2{ font-family:var(--font-display); font-size:24px; margin:0 0 8px; letter-spacing:-0.01em; }
+  .ovcard h2.win{ color:var(--mint); }
+  .ovcard h2.lose{ color:var(--danger); }
+  .ovcard p{ color:var(--text-dim); font-size:13.5px; line-height:1.6; margin: 0 0 14px; }
+  .ovcard .lesson{
+    text-align:left; background: rgba(245,197,66,0.09); border:1px solid rgba(245,197,66,0.28);
+    border-radius:12px; padding:12px 14px; font-size:12.5px; color:#f0e2b8; margin-bottom:16px; line-height:1.55;
+  }
+  .ovcard .lesson b{ color:var(--gold); }
+  .statsgrid{ display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; justify-content:center; }
+  .statsgrid .sb{ background: rgba(255,255,255,0.06); border:1px solid var(--line); border-radius:10px; padding:9px 14px; min-width:100px; }
+  .statsgrid .sb .n{ font-family:var(--font-mono); font-weight:700; font-size:17px; }
+  .statsgrid .sb .l{ font-size:9.5px; color:var(--text-dim2); text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
+  .btnrow{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .bigbtn{
+    font-family:var(--font-body); font-weight:700; font-size:14px; cursor:pointer;
+    border:none; border-radius:12px; padding:12px 26px; transition: transform .1s, filter .15s;
+  }
+  .bigbtn.primary{ background: linear-gradient(135deg, var(--mint), #17b98a); color:#03241a; }
+  .bigbtn.ghost{ background: rgba(255,255,255,0.08); color:var(--text); border:1px solid var(--line); }
+  .bigbtn:hover{ filter:brightness(1.08); }
+  .bigbtn:active{ transform: scale(0.96); }
+
+  .rules{ text-align:left; display:grid; grid-template-columns:1fr 1fr; gap:8px; margin: 14px 0; max-height:220px; overflow-y:auto; padding-right:4px; }
+  @media (max-width:520px){ .rules{ grid-template-columns:1fr; } }
+  .rules .ri{ background: rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:10px; padding:9px 10px; font-size:11px; color:var(--text-dim); }
+  .rules .ri b{ display:block; color:var(--text); font-size:11.5px; margin-bottom:2px; font-family:var(--font-display); }
+
+  ::selection{ background: var(--mint); color:#04241a; }
+  @media (max-width: 480px){
+    .brand h1{ font-size:19px; }
+    .stat{ min-width: 42%; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="brand">
+    <div>
+      <h1>Defensa del <span>Bolsillo Central</span></h1>
+      <p>Tower defense financiero — protege tu reserva de los gastos hormiga</p>
+    </div>
+  </div>
+
+  <div class="panel">
+
+    <div class="topbar">
+      <div class="stat reserva">
+        <div class="ic">🏦</div>
+        <div class="info">
+          <div class="label">Reserva</div>
+          <div class="val" id="valReserva">800</div>
+          <div class="barwrap"><div class="barfill" id="barReserva"></div></div>
+        </div>
+      </div>
+      <div class="stat capital">
+        <div class="ic">🪙</div>
+        <div class="info">
+          <div class="label">Capital disponible</div>
+          <div class="val" id="valCapital">160 / 1000</div>
+        </div>
+      </div>
+      <div class="wavepill" id="waveLabel">Oleada 0/10</div>
+      <div class="spacer"></div>
+      <button class="iconbtn" id="btnSpeed" title="Velocidad">1×</button>
+      <button class="iconbtn" id="btnSound" title="Sonido">🔊</button>
+      <button class="iconbtn" id="btnPause" title="Pausa">⏸</button>
+      <button class="iconbtn" id="btnHelp" title="Ayuda">❔</button>
+    </div>
+
+    <div class="stage" id="stage">
+      <canvas id="gamecanvas" width="760" height="420"></canvas>
+
+      <div class="prep-banner" id="prepBanner" style="display:none;">
+        <span id="prepText">Preparando oleada… <b id="prepTimer">10</b>s</span>
+        <button id="btnStartWave">Iniciar oleada ⚔️</button>
+      </div>
+
+      <div class="toast" id="toast"></div>
+
+      <div class="tpop" id="towerPopup">
+        <div class="th"><span class="ic" id="tpIcon">💰</span><span class="nm" id="tpName">Torre</span><span class="lvl" id="tpLevel">Nv.1</span></div>
+        <div class="hpbar"><div class="hpbarfill" id="tpHpFill"></div></div>
+        <div class="stats" id="tpStats"></div>
+        <div class="row">
+          <button class="up" id="tpUpgrade">Mejorar</button>
+          <button class="sell" id="tpSell">Vender</button>
+        </div>
+      </div>
+
+      <!-- INTRO -->
+      <div class="overlay" id="ovIntro">
+        <div class="ovcard">
+          <div class="emoji">🏦</div>
+          <h2>Defensa del Bolsillo Central</h2>
+          <p>¡Atención! El dinero <b>no se genera de forma automática</b> y tiene un <b>límite máximo de 1000🪙</b>. ¡Además, tus torres pierden vida progresivamente y los enemigos se fortalecen enormemente desde la horda 5!</p>
+          <div class="rules">
+            <div class="ri"><b>💰 Torre de Ahorro</b>Daño constante y directo a objetivo único.</div>
+            <div class="ri"><b>📈 Torre de Inversión</b>¡CRUCIAL! Genera ingresos de capital periódicos.</div>
+            <div class="ri"><b>🛡️ Torre de Planificación</b>Ralentiza la velocidad de avance en área.</div>
+            <div class="ri"><b>⚡ Fondo de Emergencia</b>Cadencia de tiro ultrarrápida.</div>
+            <div class="ri"><b>🎓 Educación Financiera</b>Daño de área (Splash) destructivo.</div>
+            <div class="ri"><b>⏳ Mantenimiento</b>Las torres pierden vida con el tiempo; mejorarlas las repara al 100%.</div>
+          </div>
+          <div class="btnrow">
+            <button class="bigbtn primary" id="btnStart">Comenzar defensa</button>
+            <button class="bigbtn ghost" id="btnHowIntro">Cómo jugar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HELP -->
+      <div class="overlay" id="ovHelp" style="display:none;">
+        <div class="ovcard" style="max-width:560px;">
+          <div class="emoji">❔</div>
+          <h2>Manual táctico</h2>
+          <p style="text-align:left">Haz clic en una torre abajo para armarla y ubícala en el terreno. Recuerda que las torres pierden vida con el paso del tiempo y desaparecerán si no las mejoras a tiempo para repararlas. El capital máximo está limitado a 1000🪙.</p>
+          <div class="rules">
+            <div class="ri"><b>🐜 Gasto Hormiga</b>En hordas consumen rápido la reserva.</div>
+            <div class="ri"><b>🛍️ Compra por Impulso</b>Extremadamente rápida y agresiva.</div>
+            <div class="ri"><b>🔁 Suscripción Olvidada</b>Muy resistente, absorbe bastante daño.</div>
+            <div class="ri"><b>📢 Publicidad Engañosa</b>Tiene un fuerte escudo inicial contra el primer ataque.</div>
+            <div class="ri"><b>💳 Deuda de Tarjeta</b>Jefe final de la oleada 10: gigantesca y devastadora.</div>
+          </div>
+          <div class="btnrow"><button class="bigbtn primary" id="btnCloseHelp">Entendido</button></div>
+        </div>
+      </div>
+
+      <!-- END -->
+      <div class="overlay" id="ovEnd" style="display:none;">
+        <div class="ovcard">
+          <div class="emoji" id="endEmoji">🏆</div>
+          <h2 id="endTitle" class="win">¡Bolsillo protegido!</h2>
+          <p id="endSub">Resististe las 10 oleadas de gastos.</p>
+          <div class="statsgrid">
+            <div class="sb"><div class="n" id="statReserva">0</div><div class="l">Reserva final</div></div>
+            <div class="sb"><div class="n" id="statPct">0%</div><div class="l">% mantenido</div></div>
+            <div class="sb"><div class="n" id="statWave">0/10</div><div class="l">Oleada alcanzada</div></div>
+            <div class="sb"><div class="n" id="statKills">0</div><div class="l">Gastos detenidos</div></div>
+          </div>
+          <div class="lesson" id="endLesson"></div>
+          <div class="btnrow"><button class="bigbtn primary" id="btnRestart">Jugar de nuevo</button></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="shop" id="shop">
+      <!-- filled by JS -->
+    </div>
+
+    <div class="ticker">
+      <span class="bulb">💡</span>
+      <span id="tickerText">Recuerda colocar Torres de Inversión al inicio para generar ingresos pasivos continuamente y no exceder los 1000🪙.</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* =========================================================
+   CONFIG & GRID
+========================================================= */
+const COLS=10, ROWS=7, TILE_W=64, TILE_H=32, ORIGIN_X=360, ORIGIN_Y=92;
+const CW=760, CH=420;
+const MAX_CAPITAL = 1000; // Limite de dinero agregado
+
+const PATH = [
+  [0,1],[1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],
+  [9,2],[9,3],
+  [8,3],[7,3],[6,3],[5,3],[4,3],[3,3],[2,3],[1,3],
+  [1,4],[1,5],
+  [2,5],[3,5],[4,5],[5,5],[6,5],[7,5],[8,5],[9,5],
+  [9,6]
+];
+const pathSet = new Set(PATH.map(p=>p[0]+','+p[1]));
+const BASE_TILE = PATH[PATH.length-1];
+const SPAWN_TILE = PATH[0];
+
+function gridToScreen(c,r){
+  return { x: ORIGIN_X + (c-r)*(TILE_W/2), y: ORIGIN_Y + (c+r)*(TILE_H/2) };
+}
+const pathScreen = PATH.map(p=>gridToScreen(p[0],p[1]));
+const PATH_LEN = pathScreen.length - 1;
+
+const buildable = [];
+for(let c=0;c<COLS;c++){
+  for(let r=0;r<ROWS;r++){
+    if(!pathSet.has(c+','+r)){
+      const s = gridToScreen(c,r);
+      buildable.push({c,r,x:s.x,y:s.y,occupied:null});
+    }
+  }
+}
+function tileAt(c,r){ return buildable.find(t=>t.c===c && t.r===r) || null; }
+
+/* =========================================================
+   GAME DATA (Dificultad Aumentada + Vida en Torres)
+========================================================= */
+const TOWER_DEFS = {
+  ahorro: {
+    key:'1', name:'Torre de Ahorro', icon:'💰', color:'#2fe6b0',
+    desc:'Ataque directo a objetivo único.',
+    maxHp: 100, hpDegradationRate: 2.2, // pierde 2.2 HP por segundo
+    levels:[
+      {cost:60,  dmg:22, range:120, rate:1.0},
+      {cost:85,  dmg:42, range:135, rate:1.2},
+      {cost:130, dmg:75, range:150, rate:1.4}
+    ]
+  },
+  inversion: {
+    key:'2', name:'Torre de Inversión', icon:'📈', color:'#f5c542',
+    desc:'Genera capital pasivo continuamente (¡Tu única fuente!).',
+    maxHp: 80, hpDegradationRate: 2.8, // las inversiones se desgastan mas rapido
+    levels:[
+      {cost:100, interest:25, interval:4.0, range:0},
+      {cost:120, interest:48, interval:3.5, range:0},
+      {cost:180, interest:80, interval:3.0, range:0}
+    ]
+  },
+  planificacion: {
+    key:'3', name:'Torre de Planificación', icon:'🛡️', color:'#7ca8ff',
+    desc:'Ralentiza a los enemigos en área.',
+    maxHp: 110, hpDegradationRate: 1.8,
+    levels:[
+      {cost:75,  range:115, slow:0.55, duration:2.0, rate:1.0},
+      {cost:95,  range:130, slow:0.40, duration:2.4, rate:1.1},
+      {cost:140, range:145, slow:0.30, duration:2.8, rate:1.2}
+    ]
+  },
+  emergencia: {
+    key:'4', name:'Fondo de Emergencia', icon:'⚡', color:'#ff9f43',
+    desc:'Ataque rápido de ráfaga.',
+    maxHp: 90, hpDegradationRate: 2.5,
+    levels:[
+      {cost:70,  dmg:13, range:105, rate:2.5},
+      {cost:90,  dmg:24, range:115, rate:2.9},
+      {cost:135, dmg:40, range:130, rate:3.4}
+    ]
+  },
+  educacion: {
+    key:'5', name:'Educación Financiera', icon:'🎓', color:'#c9a0ff',
+    desc:'Daño en área expansivo (Splash).',
+    maxHp: 120, hpDegradationRate: 2.0,
+    levels:[
+      {cost:120, dmg:38, range:115, rate:0.60, splash:42},
+      {cost:150, dmg:72, range:125, rate:0.70, splash:52},
+      {cost:210, dmg:125, range:140, rate:0.80, splash:65}
+    ]
+  }
+};
+
+const ENEMY_DEFS = {
+  hormiga:    {name:'Gasto Hormiga',            icon:'🐜', color:'#8bd3c7', hp:50,  speed:1.45, reward:5,  dmg:25,  shield:0 },
+  impulso:    {name:'Compra por Impulso',       icon:'🛍️', color:'#ffb86b', hp:70,  speed:2.40, reward:7,  dmg:35,  shield:0 },
+  suscripcion:{name:'Suscripción Olvidada',     icon:'🔁', color:'#c9a0ff', hp:180, speed:1.05, reward:12, dmg:50,  shield:0 },
+  publicidad: {name:'Publicidad Engañosa',      icon:'📢', color:'#ff6b8b', hp:120, speed:1.60, reward:11, dmg:45,  shield:65 },
+  boss:       {name:'Deuda de Tarjeta de Crédito', icon:'💳', color:'#ff3b3b', hp:2800,speed:0.60, reward:180,dmg:500, shield:300 }
+};
+
+const WAVES = [
+  {groups:{hormiga:10}, interval:0.75},
+  {groups:{hormiga:12, impulso:5}, interval:0.70},
+  {groups:{hormiga:10, impulso:8}, interval:0.65},
+  {groups:{hormiga:10, impulso:8, suscripcion:5}, interval:0.60},
+  {groups:{impulso:16, suscripcion:9, hormiga:10}, interval:0.50}, // Horda 5 con mas enemigos
+  {groups:{hormiga:15, impulso:15, publicidad:10, suscripcion:6}, interval:0.45},
+  {groups:{suscripcion:14, publicidad:12, impulso:16}, interval:0.40},
+  {groups:{hormiga:22, impulso:18, publicidad:12, suscripcion:10}, interval:0.35},
+  {groups:{suscripcion:16, publicidad:15, impulso:22, hormiga:15}, interval:0.30},
+  {groups:{boss:1, hormiga:20, impulso:20, suscripcion:15, publicidad:12}, interval:0.28}
+];
+
+const TIPS = [
+  "Las torres pierden vida continuamente: ¡Mejóralas para reponer su salud al 100%!",
+  "El capital tiene un tope de 1000🪙. Invierte antes de llegar al límite.",
+  "A partir de la oleada 5 los enemigos tienen un escalado de vida masivo.",
+  "Las Torres de Inversión son tu ÚNICA fuente pasiva de dinero.",
+  "La torre de Planificación ralentiza a los enemigos veloces.",
+  "Si una torre se queda sin vida desaparecerá del mapa.",
+  "Mejorar torres clave te ahorra dinero y mantiene vivas tus defensas.",
+  "La Deuda de Tarjeta en la horda 10 requiere un enorme poder de fuego concentrado."
+];
+
+const RESERVE_MAX = 800;
+const RESERVE_WIN_PCT = 0.5;
+const START_CAPITAL = 160;
+const PREP_TIME = 10;
+
+/* =========================================================
+   STATE
+========================================================= */
+let canvas, ctx, DPR=1;
+let appState = 'intro';
+let waveState = 'idle';
+let paused = false;
+let gameSpeed = 1;
+let soundOn = true;
+
+let reserve = RESERVE_MAX;
+let capital = START_CAPITAL;
+let currentWave = 0;
+let killCount = 0;
+let totalDamageTaken = 0;
+
+let enemies = [];
+let towers = [];
+let particles = [];
+let floats = [];
+let projectiles = [];
+
+let spawnQueue = [];
+let spawnIndex = 0;
+let spawnTimer = 0;
+let spawnInterval = 0.8;
+let prepTimer = PREP_TIME;
+
+let placingType = null;
+let selectedTower = null;
+let hoverTile = null;
+let mousePos = {x:-999,y:-999};
+
+let shakeTime=0, shakeMag=0;
+let lastTs = 0;
+let uid = 1;
+
+/* =========================================================
+   AUDIO
+========================================================= */
+let actx=null;
+function ensureAudio(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } }
+function tone(freq, dur, type, vol){
+  if(!soundOn) return;
+  ensureAudio();
+  if(!actx) return;
+  const t0 = actx.currentTime;
+  const osc = actx.createOscillator();
+  const gain = actx.createGain();
+  osc.type = type||'sine';
+  osc.frequency.setValueAtTime(freq, t0);
+  gain.gain.setValueAtTime(0, t0);
+  gain.gain.linearRampToValueAtTime(vol||0.06, t0+0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+  osc.connect(gain).connect(actx.destination);
+  osc.start(t0); osc.stop(t0+dur+0.02);
+}
+const sfx = {
+  shoot: ()=> tone(340,0.07,'square',0.035),
+  slow: ()=> tone(220,0.12,'sine',0.03),
+  death: ()=> tone(520,0.1,'triangle',0.05),
+  hit: ()=> tone(150,0.18,'sawtooth',0.05),
+  coin: ()=> tone(760,0.09,'sine',0.04),
+  break: ()=> tone(120,0.25,'sawtooth',0.08),
+  wave: ()=> { tone(220,0.12,'sine',0.05); setTimeout(()=>tone(330,0.14,'sine',0.05),110); setTimeout(()=>tone(440,0.18,'sine',0.06),230); },
+  win: ()=> { [440,554,660,880].forEach((f,i)=>setTimeout(()=>tone(f,0.22,'triangle',0.06), i*130)); },
+  lose: ()=> { [300,260,220,160].forEach((f,i)=>setTimeout(()=>tone(f,0.25,'sawtooth',0.06), i*140)); }
+};
+
+/* =========================================================
+   UTIL
+========================================================= */
+function lerp(a,b,t){ return a+(b-a)*t; }
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+function dist(x1,y1,x2,y2){ const dx=x2-x1, dy=y2-y1; return Math.sqrt(dx*dx+dy*dy); }
+function fmt(n){ return Math.round(n).toLocaleString('es-BO'); }
+
+function addCapital(amount){
+  capital = Math.min(MAX_CAPITAL, capital + amount);
+}
+
+function pointOnPath(progress){
+  const p = clamp(progress, 0, PATH_LEN);
+  const seg = Math.min(Math.floor(p), pathScreen.length-2);
+  const t = p - seg;
+  const a = pathScreen[seg], b = pathScreen[seg+1];
+  return { x: lerp(a.x,b.x,t), y: lerp(a.y,b.y,t) };
+}
+
+function spawnFloat(x,y,text,color){
+  floats.push({x,y,text,color,life:1.0,vy:-26});
+}
+function spawnBurst(x,y,color,n){
+  n = n||10;
+  for(let i=0;i<n;i++){
+    const ang = Math.random()*Math.PI*2;
+    const spd = 30+Math.random()*70;
+    particles.push({x,y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,life:1,color,size:2+Math.random()*2.5});
+  }
+}
+function shake(mag,time){ shakeMag=Math.max(shakeMag,mag); shakeTime=Math.max(shakeTime,time); }
+
+/* =========================================================
+   WAVE BUILDING
+========================================================= */
+function buildWaveQueue(waveNum){
+  const def = WAVES[waveNum-1];
+  const groups = Object.keys(def.groups).map(k=>({type:k, count:def.groups[k]}));
+  const queue = [];
+  let remaining = true;
+  while(remaining){
+    remaining = false;
+    for(const g of groups){
+      if(g.count>0){ queue.push(g.type); g.count--; if(g.count>0) remaining=true; }
+    }
+  }
+  return {queue, interval: def.interval};
+}
+
+function spawnEnemy(type, waveNum){
+  const base = ENEMY_DEFS[type];
+  
+  // Escalado de vida incrementado significativamente a partir de la oleada 5
+  let hpScale = 1 + (waveNum-1)*0.20;
+  if (waveNum >= 5) {
+    // Escalado extra agresivo desde horda 5
+    hpScale += (waveNum - 4) * 0.45;
+  }
+  
+  const dmgScale = 1 + (waveNum-1)*0.15;
+  const rewardScale = 1 + (waveNum-1)*0.05;
+  
+  const calculatedHp = Math.round(base.hp * hpScale);
+  const calculatedShield = Math.round(base.shield * (1 + (waveNum >= 5 ? (waveNum-4)*0.3 : 0)));
+
+  const e = {
+    id: uid++,
+    type,
+    name: base.name, icon: base.icon, color: base.color,
+    hp: calculatedHp,
+    maxHp: calculatedHp,
+    speed: base.speed,
+    reward: Math.round(base.reward*rewardScale),
+    dmg: Math.round(base.dmg*dmgScale),
+    shield: calculatedShield,
+    maxShield: calculatedShield,
+    progress: 0,
+    dead:false,
+    reachedBase:false,
+    slowUntil: 0,
+    slowFactor: 1,
+    bob: Math.random()*Math.PI*2,
+    hitFlash: 0
+  };
+  enemies.push(e);
+}
+
+function startWave(){
+  if(waveState==='active') return;
+  currentWave++;
+  const built = buildWaveQueue(currentWave);
+  spawnQueue = built.queue;
+  spawnInterval = built.interval;
+  spawnIndex = 0;
+  spawnTimer = 0;
+  waveState = 'active';
+  document.getElementById('prepBanner').style.display='none';
+  sfx.wave();
+  updateWaveLabel();
+}
+
+function updateWaveLabel(){
+  document.getElementById('waveLabel').textContent = 'Oleada ' + Math.min(currentWave,10) + '/10';
+}
+
+/* =========================================================
+   TOWERS (Vida & Desgaste)
+========================================================= */
+function placeTower(type, tile){
+  const def = TOWER_DEFS[type];
+  const lvl = def.levels[0];
+  if(capital < lvl.cost) return false;
+  capital -= lvl.cost;
+  const t = {
+    id: uid++, type, level:1, tile,
+    x: tile.x, y: tile.y - 6,
+    cooldown: 0, invested: lvl.cost,
+    hp: def.maxHp, maxHp: def.maxHp,
+    hpDegradation: def.hpDegradationRate,
+    fireFlash: 0, pulse:0
+  };
+  tile.occupied = t;
+  towers.push(t);
+  spawnFloat(tile.x, tile.y-40, '-'+fmt(lvl.cost), '#ff8f9c');
+  return true;
+}
+
+function towerLevelDef(t){ return TOWER_DEFS[t.type].levels[t.level-1]; }
+
+function upgradeTower(t){
+  const def = TOWER_DEFS[t.type];
+  if(t.level>=def.levels.length) return;
+  const cost = def.levels[t.level].cost;
+  if(capital < cost) return;
+  capital -= cost;
+  t.invested += cost;
+  t.level++;
+  
+  // Al mejorar la torre recobra toda su vida al 100% y aumenta su Max HP
+  t.maxHp = Math.round(def.maxHp * (1 + (t.level - 1) * 0.35));
+  t.hp = t.maxHp;
+  
+  spawnFloat(t.x, t.y-40, '-'+fmt(cost), '#ff8f9c');
+  spawnFloat(t.x, t.y-20, '❤️ REPARADA', '#2fe6b0');
+  spawnBurst(t.x,t.y-14, def.color, 14);
+}
+
+function sellTower(t){
+  const refund = Math.round(t.invested*0.50);
+  addCapital(refund);
+  t.tile.occupied = null;
+  towers = towers.filter(x=>x.id!==t.id);
+  spawnFloat(t.x, t.y-40, '+'+fmt(refund), '#f5c542');
+}
+
+/* =========================================================
+   DAMAGE
+========================================================= */
+function damageEnemy(e, amount, hitX, hitY){
+  if(e.dead) return;
+  e.hitFlash = 0.12;
+  if(e.shield>0){
+    const absorb = Math.min(e.shield, amount);
+    e.shield -= absorb;
+    amount -= absorb;
+    spawnFloat(hitX, hitY-10, '🛡️-'+fmt(absorb), '#7ca8ff');
+    if(amount<=0) return;
+  }
+  e.hp -= amount;
+  spawnFloat(hitX, hitY-10, '-'+fmt(amount), '#ffb0b8');
+  if(e.hp<=0 && !e.dead){
+    e.dead = true;
+    addCapital(e.reward);
+    killCount++;
+    spawnFloat(e.x, e.y-16, '+'+fmt(e.reward), '#f5c542');
+    spawnBurst(e.x, e.y-8, e.color, 14);
+    sfx.death();
+  }
+}
+
+/* =========================================================
+   UPDATE
+========================================================= */
+function update(dt){
+  if(appState!=='playing' || paused) return;
+  dt *= gameSpeed;
+
+  // prep countdown
+  if(waveState==='prep'){
+    prepTimer -= dt;
+    document.getElementById('prepTimer').textContent = Math.max(0,Math.ceil(prepTimer));
+    if(prepTimer<=0){ startWave(); }
+  }
+
+  // spawning
+  if(waveState==='active'){
+    spawnTimer -= dt;
+    if(spawnTimer<=0 && spawnIndex<spawnQueue.length){
+      spawnEnemy(spawnQueue[spawnIndex], currentWave);
+      spawnIndex++;
+      spawnTimer = spawnInterval;
+    }
+    if(spawnIndex>=spawnQueue.length && enemies.length===0){
+      waveState='idle';
+      if(currentWave>=10){ endGame(); }
+      else{
+        prepTimer = PREP_TIME;
+        document.getElementById('prepBanner').style.display='flex';
+        document.getElementById('tickerText').textContent = TIPS[currentWave % TIPS.length];
+        waveState='prep';
+      }
+    }
+  }
+
+  // enemies
+  const now = performance.now()/1000;
+  for(const e of enemies){
+    if(e.dead) continue;
+    e.bob += dt*6;
+    if(e.hitFlash>0) e.hitFlash -= dt;
+    let spd = e.speed;
+    if(now < e.slowUntil) spd *= e.slowFactor;
+    e.progress += spd*dt;
+    const p = pointOnPath(e.progress);
+    e.x = p.x; e.y = p.y;
+    if(e.progress >= PATH_LEN && !e.reachedBase){
+      e.reachedBase = true;
+      reserve = clamp(reserve - e.dmg, 0, RESERVE_MAX);
+      totalDamageTaken += e.dmg;
+      shake(10, 0.35);
+      spawnFloat(BASE_TILE ? gridToScreen(BASE_TILE[0],BASE_TILE[1]).x : e.x, gridToScreen(BASE_TILE[0],BASE_TILE[1]).y-20, '-'+fmt(e.dmg), '#ff5a6e');
+      spawnBurst(e.x,e.y, '#ff5a6e', 18);
+      sfx.hit();
+    }
+  }
+  enemies = enemies.filter(e=> !e.dead && !e.reachedBase);
+
+  // towers (Degradación de Vida y Acciones)
+  const destroyedTowers = [];
+  for(const t of towers){
+    const def = TOWER_DEFS[t.type];
+    const lvl = towerLevelDef(t);
+    if(t.fireFlash>0) t.fireFlash -= dt;
+    if(t.pulse>0) t.pulse -= dt;
+
+    // Desgaste natural de vida progresivo
+    t.hp -= t.hpDegradation * dt;
+    if (t.hp <= 0) {
+      t.hp = 0;
+      destroyedTowers.push(t);
+      continue;
+    }
+
+    if(t.type==='inversion'){
+      t.cooldown -= dt;
+      if(t.cooldown<=0){
+        t.cooldown = lvl.interval;
+        addCapital(lvl.interest);
+        spawnFloat(t.x, t.y-30, '+'+fmt(lvl.interest), '#f5c542');
+        t.pulse = 0.4;
+        sfx.coin();
+      }
+      continue;
+    }
+
+    if(t.type==='planificacion'){
+      t.cooldown -= dt;
+      if(t.cooldown<=0){
+        t.cooldown = 1/lvl.rate;
+        let any=false;
+        for(const e of enemies){
+          if(e.dead) continue;
+          if(dist(t.x,t.y,e.x,e.y) <= lvl.range){
+            e.slowUntil = now + lvl.duration;
+            e.slowFactor = lvl.slow;
+            any=true;
+          }
+        }
+        if(any){ t.pulse = 0.5; sfx.slow(); }
+      }
+      continue;
+    }
+
+    // Ataque estándar o Splash
+    t.cooldown -= dt;
+    if(t.cooldown<=0){
+      let target=null;
+      let bestProgress=-1;
+      for(const e of enemies){
+        if(e.dead) continue;
+        const d = dist(t.x,t.y,e.x,e.y);
+        if(d<=lvl.range && e.progress>bestProgress){ bestProgress=e.progress; target=e; }
+      }
+      if(target){
+        t.cooldown = 1/lvl.rate;
+        t.fireFlash = 0.12;
+        projectiles.push({
+          x:t.x, y:t.y-18, tx:target.x, ty:target.y-8, life:0.12, 
+          color:def.color, targetId:target.id, dmg:lvl.dmg, splash:lvl.splash||0
+        });
+        sfx.shoot();
+      }
+    }
+  }
+
+  // Eliminar torres destruidas por falta de vida
+  for (const dtower of destroyedTowers) {
+    dtower.tile.occupied = null;
+    spawnFloat(dtower.x, dtower.y-30, '💥 DESTRUIDA', '#ff5a6e');
+    spawnBurst(dtower.x, dtower.y-10, '#ff5a6e', 16);
+    if (selectedTower && selectedTower.id === dtower.id) {
+      closeTowerPopup();
+    }
+    sfx.break();
+  }
+  if (destroyedTowers.length > 0) {
+    towers = towers.filter(t => t.hp > 0);
+  }
+
+  // proyectiles
+  for(const pr of projectiles){
+    pr.life -= dt;
+    if(pr.life<=0 && !pr.resolved){
+      pr.resolved = true;
+      const target = enemies.find(e=>e.id===pr.targetId && !e.dead);
+      if(target){
+        if(pr.splash > 0){
+          spawnBurst(target.x, target.y, pr.color, 12);
+          for(const e of enemies){
+            if(!e.dead && dist(target.x, target.y, e.x, e.y) <= pr.splash){
+              damageEnemy(e, pr.dmg, e.x, e.y);
+            }
+          }
+        } else {
+          damageEnemy(target, pr.dmg, target.x, target.y);
+        }
+      }
+    }
+  }
+  projectiles = projectiles.filter(p=>p.life>-0.05);
+
+  // partículas
+  for(const p of particles){
+    p.life -= dt*1.6;
+    p.x += p.vx*dt; p.y += p.vy*dt;
+    p.vy += 90*dt;
+  }
+  particles = particles.filter(p=>p.life>0);
+
+  for(const f of floats){
+    f.life -= dt*0.9;
+    f.y += f.vy*dt;
+    f.vy *= 0.94;
+  }
+  floats = floats.filter(f=>f.life>0);
+
+  if(shakeTime>0) shakeTime -= dt;
+
+  if(reserve<=0){ reserve=0; endGame(); }
+
+  refreshHud();
+  if (selectedTower) {
+    updateTowerPopupHp();
+  }
+}
+
+/* =========================================================
+   RENDER
+========================================================= */
+function tileDiamondPath(cx,cy){
+  ctx.beginPath();
+  ctx.moveTo(cx, cy-TILE_H/2);
+  ctx.lineTo(cx+TILE_W/2, cy);
+  ctx.lineTo(cx, cy+TILE_H/2);
+  ctx.lineTo(cx-TILE_W/2, cy);
+  ctx.closePath();
+}
+
+function render(){
+  ctx.clearRect(0,0,CW,CH);
+  ctx.save();
+  if(shakeTime>0){
+    const m = shakeMag * (shakeTime);
+    ctx.translate((Math.random()-0.5)*m, (Math.random()-0.5)*m);
+  }
+
+  const grad = ctx.createRadialGradient(CW/2,CH*0.15,20,CW/2,CH*0.5,420);
+  grad.addColorStop(0,'rgba(124,168,255,0.08)');
+  grad.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,CW,CH);
+
+  const allTiles = [];
+  for(let c=0;c<COLS;c++) for(let r=0;r<ROWS;r++) allTiles.push({c,r});
+  allTiles.sort((a,b)=>(a.c+a.r)-(b.c+b.r));
+
+  for(const {c,r} of allTiles){
+    const s = gridToScreen(c,r);
+    const isPath = pathSet.has(c+','+r);
+    const isBase = (c===BASE_TILE[0] && r===BASE_TILE[1]);
+    const isSpawn = (c===SPAWN_TILE[0] && r===SPAWN_TILE[1]);
+    tileDiamondPath(s.x,s.y);
+    if(isPath){
+      ctx.fillStyle = isBase ? '#123b32' : '#14253d';
+      ctx.fill();
+      ctx.strokeStyle = '#38557d';
+      ctx.lineWidth=1;
+      ctx.stroke();
+    } else {
+      const tile = tileAt(c,r);
+      const hovered = hoverTile && hoverTile.c===c && hoverTile.r===r;
+      ctx.fillStyle = hovered && placingType ? '#1b4a3f' : '#0e1a2b';
+      ctx.fill();
+      ctx.strokeStyle = '#21334d';
+      ctx.lineWidth=1;
+      ctx.stroke();
+    }
+    if(isSpawn){
+      ctx.font='16px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('🚪', s.x, s.y-2);
+    }
+    if(isBase){
+      const pct = reserve/RESERVE_MAX;
+      const pulse = 1 + Math.sin(performance.now()/300)*0.08;
+      ctx.save();
+      ctx.translate(s.x, s.y-6);
+      ctx.scale(pulse,pulse);
+      ctx.font='28px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.shadowColor = pct>0.5?'#2fe6b0':(pct>0.2?'#f5c542':'#ff5a6e');
+      ctx.shadowBlur=16;
+      ctx.fillText('🏦', 0, 0);
+      ctx.restore();
+    }
+  }
+
+  if(placingType && hoverTile){
+    const def = TOWER_DEFS[placingType];
+    const lvl = def.levels[0];
+    if(lvl.range>0){
+      ctx.beginPath();
+      ctx.ellipse(hoverTile.x, hoverTile.y, lvl.range, lvl.range*0.55, 0,0,Math.PI*2);
+      ctx.strokeStyle = '#2fe6b0';
+      ctx.setLineDash([5,4]);
+      ctx.lineWidth=1.5;
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  if(selectedTower){
+    const lvl = towerLevelDef(selectedTower);
+    if(lvl.range>0){
+      ctx.beginPath();
+      ctx.ellipse(selectedTower.x, selectedTower.y, lvl.range, lvl.range*0.55, 0,0,Math.PI*2);
+      ctx.strokeStyle = '#7ca8ff';
+      ctx.setLineDash([5,4]);
+      ctx.lineWidth=1.5;
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  const drawables = [];
+  for(const t of towers) drawables.push({kind:'tower', obj:t, y:t.tile.y});
+  for(const e of enemies) drawables.push({kind:'enemy', obj:e, y:e.y});
+  drawables.sort((a,b)=>a.y-b.y);
+
+  for(const d of drawables){
+    if(d.kind==='tower') drawTower(d.obj);
+    else drawEnemy(d.obj);
+  }
+
+  for(const pr of projectiles){
+    if(pr.resolved) continue;
+    const t = 1 - Math.max(0,pr.life)/0.12;
+    ctx.beginPath();
+    ctx.moveTo(pr.x, pr.y);
+    ctx.lineTo(lerp(pr.x,pr.tx,Math.min(1,t+0.3)), lerp(pr.y,pr.ty,Math.min(1,t+0.3)));
+    ctx.strokeStyle = pr.color;
+    ctx.lineWidth = pr.splash>0 ? 3.5 : 2;
+    ctx.stroke();
+  }
+
+  for(const p of particles){
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    ctx.fillStyle = p.color;
+    ctx.fill();
+  }
+
+  ctx.font='700 12px "JetBrains Mono", monospace';
+  ctx.textAlign='center';
+  for(const f of floats){
+    ctx.fillStyle = f.color;
+    ctx.fillText(f.text, f.x, f.y);
+  }
+
+  ctx.restore();
+}
+
+function drawTower(t){
+  const def = TOWER_DEFS[t.type];
+  const bounce = t.fireFlash>0 ? -4 : 0;
+  const pulseScale = t.pulse>0 ? 1+t.pulse*0.25 : 1;
+
+  ctx.beginPath();
+  ctx.ellipse(t.tile.x, t.tile.y+2, 20,10,0,0,Math.PI*2);
+  ctx.fillStyle='rgba(0,0,0,0.55)';
+  ctx.fill();
+
+  if((t.type==='planificacion'||t.type==='inversion') && t.pulse>0){
+    ctx.beginPath();
+    const rr = 18 + (0.5-Math.max(0,t.pulse))*70;
+    ctx.ellipse(t.tile.x, t.tile.y, rr, rr*0.55,0,0,Math.PI*2);
+    ctx.strokeStyle = def.color;
+    ctx.lineWidth=2;
+    ctx.stroke();
+  }
+
+  ctx.save();
+  ctx.translate(t.tile.x, t.tile.y-14+bounce);
+  ctx.scale(pulseScale,pulseScale);
+
+  ctx.beginPath();
+  ctx.arc(0,20,15,0,Math.PI*2);
+  ctx.fillStyle = '#0e1d30';
+  ctx.fill();
+  ctx.strokeStyle = def.color;
+  ctx.lineWidth = selectedTower===t ? 3 : 2;
+  ctx.stroke();
+
+  ctx.font='20px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(def.icon, 0, 20);
+
+  for(let i=0;i<t.level;i++){
+    ctx.beginPath();
+    ctx.arc(-8+i*8, 38, 2.6, 0, Math.PI*2);
+    ctx.fillStyle = def.color;
+    ctx.fill();
+  }
+  
+  // Barra de Vida de la torre en el mapa
+  const barW = 28;
+  const hpPct = clamp(t.hp / t.maxHp, 0, 1);
+  ctx.fillStyle = 'rgba(0,0,0,0.7)';
+  ctx.fillRect(-barW/2, 2, barW, 4);
+  ctx.fillStyle = hpPct > 0.5 ? '#2fe6b0' : (hpPct > 0.25 ? '#f5c542' : '#ff5a6e');
+  ctx.fillRect(-barW/2, 2, barW * hpPct, 4);
+
+  ctx.restore();
+}
+
+function drawEnemy(e){
+  const bobY = Math.sin(e.bob)*2.5;
+  const x=e.x, y=e.y+bobY;
+  const size = e.type==='boss' ? 17 : (e.type==='suscripcion'?12:10);
+
+  ctx.beginPath();
+  ctx.ellipse(x, e.y+6, size*0.9, size*0.4, 0,0,Math.PI*2);
+  ctx.fillStyle='rgba(0,0,0,0.6)';
+  ctx.fill();
+
+  const now = performance.now()/1000;
+  if(now < e.slowUntil){
+    ctx.beginPath();
+    ctx.arc(x,y,size+5,0,Math.PI*2);
+    ctx.strokeStyle='#7ca8ff';
+    ctx.setLineDash([3,3]);
+    ctx.lineWidth=1.5;
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  ctx.beginPath();
+  ctx.arc(x,y,size,0,Math.PI*2);
+  ctx.fillStyle = e.hitFlash>0 ? '#ffffff' : e.color;
+  ctx.fill();
+  ctx.strokeStyle = '#000000';
+  ctx.lineWidth=1.5;
+  ctx.stroke();
+
+  ctx.font=(size*1.35)+'px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(e.icon, x, y);
+
+  if(e.shield>0){
+    ctx.beginPath();
+    ctx.arc(x,y,size+3,0,Math.PI*2*(e.shield/e.maxShield));
+    ctx.strokeStyle='#7ca8ff';
+    ctx.lineWidth=2.5;
+    ctx.stroke();
+  }
+
+  const barW = size*2.2;
+  const pct = clamp(e.hp/e.maxHp,0,1);
+  ctx.fillStyle='rgba(0,0,0,0.7)';
+  ctx.fillRect(x-barW/2, y-size-9, barW, 4);
+  ctx.fillStyle = pct>0.5?'#2fe6b0':(pct>0.25?'#f5c542':'#ff5a6e');
+  ctx.fillRect(x-barW/2, y-size-9, barW*pct, 4);
+}
+
+/* =========================================================
+   HUD / UI
+========================================================= */
+function refreshHud(){
+  document.getElementById('valReserva').textContent = fmt(reserve);
+  document.getElementById('valCapital').textContent = fmt(capital) + ' / ' + MAX_CAPITAL;
+  const pct = clamp(reserve/RESERVE_MAX,0,1)*100;
+  const bar = document.getElementById('barReserva');
+  bar.style.width = pct+'%';
+  bar.style.background = pct>50?'#2fe6b0':(pct>20?'#f5c542':'#ff5a6e');
+  updateWaveLabel();
+  renderShop();
+}
+
+function renderShop(){
+  const shop = document.getElementById('shop');
+  if(shop.childElementCount===0){
+    for(const type of Object.keys(TOWER_DEFS)){
+      const def = TOWER_DEFS[type];
+      const card = document.createElement('div');
+      card.className='card';
+      card.dataset.type=type;
+      card.innerHTML = `<div class="top"><span class="ic">${def.icon}</span><span class="nm">${def.name}</span><span class="key">${def.key}</span></div>
+        <div class="desc">${def.desc}</div>
+        <div class="cost">🪙 <span class="costval">${def.levels[0].cost}</span></div>`;
+      card.addEventListener('click', ()=> armTower(type));
+      shop.appendChild(card);
+    }
+  }
+  for(const card of shop.children){
+    const type = card.dataset.type;
+    const cost = TOWER_DEFS[type].levels[0].cost;
+    card.classList.toggle('poor', capital < cost && placingType!==type);
+    card.classList.toggle('armed', placingType===type);
+  }
+}
+
+function armTower(type){
+  const cost = TOWER_DEFS[type].levels[0].cost;
+  if(capital < cost){ showToast('Capital insuficiente para esta torre'); return; }
+  placingType = placingType===type ? null : type;
+  closeTowerPopup();
+  renderShop();
+}
+
+let toastTimer=null;
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> el.classList.remove('show'), 1600);
+}
+
+function updateTowerPopupHp(){
+  if (!selectedTower) return;
+  const hpFill = document.getElementById('tpHpFill');
+  if (hpFill) {
+    const hpPct = clamp(selectedTower.hp / selectedTower.maxHp, 0, 1) * 100;
+    hpFill.style.width = hpPct + '%';
+    hpFill.style.background = hpPct > 50 ? '#2fe6b0' : (hpPct > 25 ? '#f5c542' : '#ff5a6e');
+  }
+}
+
+function openTowerPopup(t){
+  selectedTower = t;
+  placingType = null;
+  renderShop();
+  const def = TOWER_DEFS[t.type];
+  const lvl = towerLevelDef(t);
+  document.getElementById('tpIcon').textContent = def.icon;
+  document.getElementById('tpName').textContent = def.name;
+  document.getElementById('tpLevel').textContent = 'Nv.'+t.level+'/'+def.levels.length;
+
+  updateTowerPopupHp();
+
+  let statsHtml = '';
+  if(t.type==='ahorro' || t.type==='emergencia'){
+    statsHtml = `Daño: <b>${lvl.dmg}</b> · Alcance: <b>${lvl.range}</b><br>Cadencia: <b>${lvl.rate.toFixed(1)}/s</b>`;
+  } else if(t.type==='educacion'){
+    statsHtml = `Daño: <b>${lvl.dmg}</b> · Área: <b>${lvl.splash}px</b><br>Cadencia: <b>${lvl.rate.toFixed(1)}/s</b>`;
+  } else if(t.type==='inversion'){
+    statsHtml = `Interés: <b>+${lvl.interest}</b> cada <b>${lvl.interval}s</b>`;
+  } else {
+    statsHtml = `Alcance: <b>${lvl.range}</b> · Ralentiza a <b>${Math.round(lvl.slow*100)}%</b><br>Duración: <b>${lvl.duration}s</b>`;
+  }
+  document.getElementById('tpStats').innerHTML = statsHtml;
+
+  const canUpgrade = t.level < def.levels.length;
+  const upBtn = document.getElementById('tpUpgrade');
+  if(canUpgrade){
+    const nextCost = def.levels[t.level].cost;
+    upBtn.textContent = 'Mejorar 🪙'+nextCost;
+    upBtn.disabled = capital < nextCost;
+  } else {
+    upBtn.textContent = 'Nivel máximo';
+    upBtn.disabled = true;
+  }
+  document.getElementById('tpSell').textContent = 'Vender 🪙'+Math.round(t.invested*0.50);
+
+  const pop = document.getElementById('towerPopup');
+  pop.classList.add('show');
+  const stageRect = document.getElementById('stage').getBoundingClientRect();
+  const scaleX = stageRect.width/CW;
+  const scaleY = stageRect.height/CH;
+  let left = t.tile.x*scaleX + 16;
+  let top = t.tile.y*scaleY - 40;
+  if(left + 195 > stageRect.width) left = t.tile.x*scaleX - 210;
+  if(top < 4) top = 4;
+  if(top + 160 > stageRect.height) top = stageRect.height-164;
+  pop.style.left = left+'px';
+  pop.style.top = top+'px';
+}
+function closeTowerPopup(){
+  selectedTower = null;
+  document.getElementById('towerPopup').classList.remove('show');
+}
+
+/* =========================================================
+   INPUT
+========================================================= */
+function getCanvasPos(evt){
+  const rect = canvas.getBoundingClientRect();
+  const cx = (evt.touches ? evt.touches[0].clientX : evt.clientX);
+  const cy = (evt.touches ? evt.touches[0].clientY : evt.clientY);
+  const scaleX = CW/rect.width, scaleY = CH/rect.height;
+  return { x:(cx-rect.left)*scaleX, y:(cy-rect.top)*scaleY };
+}
+function screenToGrid(x,y){
+  const dx = x-ORIGIN_X, dy = y-ORIGIN_Y;
+  const a = dx/(TILE_W/2), b = dy/(TILE_H/2);
+  const c = Math.round((a+b)/2);
+  const r = Math.round((b-a)/2);
+  return {c,r};
+}
+
+function onCanvasMove(evt){
+  mousePos = getCanvasPos(evt);
+  const g = screenToGrid(mousePos.x, mousePos.y);
+  const tile = tileAt(g.c,g.r);
+  hoverTile = tile;
+  canvas.style.cursor = (placingType && tile && !tile.occupied) ? 'pointer' : (placingType?'not-allowed':'pointer');
+}
+
+function onCanvasClick(evt){
+  if(appState!=='playing') return;
+  const pos = getCanvasPos(evt);
+  const g = screenToGrid(pos.x,pos.y);
+  const tile = tileAt(g.c,g.r);
+
+  if(placingType){
+    if(tile && !tile.occupied){
+      const ok = placeTower(placingType, tile);
+      if(ok){ sfx.coin(); placingType=null; renderShop(); refreshHud(); }
+    } else {
+      showToast(tile && tile.occupied ? 'Esa casilla ya tiene una torre' : 'No puedes construir en el camino');
+    }
+    return;
+  }
+
+  let clicked = null;
+  for(const t of towers){
+    if(dist(pos.x,pos.y,t.tile.x,t.tile.y) < 26){ clicked = t; break; }
+  }
+  if(clicked){ openTowerPopup(clicked); }
+  else { closeTowerPopup(); }
+}
+
+/* =========================================================
+   GAME FLOW
+========================================================= */
+function resetGame(){
+  reserve = RESERVE_MAX;
+  capital = START_CAPITAL;
+  currentWave = 0;
+  killCount = 0;
+  totalDamageTaken = 0;
+  enemies = []; towers = []; particles = []; floats = []; projectiles = [];
+  for(const t of buildable) t.occupied = null;
+  spawnQueue = []; spawnIndex = 0; spawnTimer = 0;
+  placingType = null; selectedTower = null;
+  waveState = 'prep';
+  prepTimer = PREP_TIME;
+  paused = false;
+  gameSpeed = 1;
+  document.getElementById('btnSpeed').textContent='1×';
+  document.getElementById('btnSpeed').classList.remove('on');
+  document.getElementById('prepBanner').style.display='flex';
+  document.getElementById('prepText').innerHTML = 'Preparando oleada… <b id="prepTimer">'+PREP_TIME+'</b>s';
+  document.getElementById('tickerText').textContent = TIPS[0];
+  closeTowerPopup();
+  refreshHud();
+}
+
+function endGame(){
+  appState='ended';
+  waveState='idle';
+  const pct = reserve/RESERVE_MAX;
+  const won = currentWave>=10 && pct>=RESERVE_WIN_PCT;
+  document.getElementById('ovEnd').style.display='flex';
+  document.getElementById('endEmoji').textContent = won?'🏆':'📉';
+  document.getElementById('endTitle').textContent = won? '¡Bolsillo protegido!' : 'El bolsillo quedó vacío';
+  document.getElementById('endTitle').className = won?'win':'lose';
+  document.getElementById('endSub').textContent = won
+    ? 'Resististe las 10 oleadas manteniendo tu reserva a salvo.'
+    : (reserve<=0 ? 'Los gastos hormiga vaciaron tu Bolsillo Central antes de tiempo.' : 'Llegaste al final, pero tu reserva cayó por debajo del 50% necesario.');
+  document.getElementById('statReserva').textContent = fmt(reserve);
+  document.getElementById('statPct').textContent = Math.round(pct*100)+'%';
+  document.getElementById('statWave').textContent = Math.min(currentWave,10)+'/10';
+  document.getElementById('statKills').textContent = killCount;
+  document.getElementById('endLesson').innerHTML = won
+    ? '<b>Lección:</b> mantener y reparar tus inversiones mientras administras el límite de capital es la clave del éxito financiero.'
+    : '<b>Lección:</b> la falta de mantenimiento en tus defensas y el descuido ante hordas crecientes agota la liquidez rápidamente.';
+  if(won) sfx.win(); else sfx.lose();
+}
+
+/* =========================================================
+   LOOP
+========================================================= */
+function loop(ts){
+  if(!lastTs) lastTs = ts;
+  let dt = (ts-lastTs)/1000;
+  lastTs = ts;
+  dt = Math.min(dt, 0.05);
+  update(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+
+/* =========================================================
+   INIT / EVENTS
+========================================================= */
+function init(){
+  canvas = document.getElementById('gamecanvas');
+  ctx = canvas.getContext('2d');
+  DPR = Math.min(window.devicePixelRatio||1, 2);
+  canvas.width = CW*DPR; canvas.height = CH*DPR;
+  ctx.scale(DPR,DPR);
+
+  canvas.addEventListener('mousemove', onCanvasMove);
+  canvas.addEventListener('mouseleave', ()=>{ hoverTile=null; });
+  canvas.addEventListener('click', onCanvasClick);
+  canvas.addEventListener('touchstart', (e)=>{ onCanvasMove(e); }, {passive:true});
+  canvas.addEventListener('touchend', (e)=>{
+    e.preventDefault();
+    const pos = getCanvasPos(e.changedTouches ? {clientX:e.changedTouches[0].clientX, clientY:e.changedTouches[0].clientY} : e);
+    onCanvasClick({clientX:pos.x, clientY:pos.y, touches:null, __alreadyCanvasSpace:true});
+  }, {passive:false});
+
+  document.getElementById('btnStart').addEventListener('click', ()=>{
+    ensureAudio();
+    document.getElementById('ovIntro').style.display='none';
+    appState='playing';
+    resetGame();
+  });
+  document.getElementById('btnHowIntro').addEventListener('click', ()=>{
+    document.getElementById('ovHelp').style.display='flex';
+  });
+  document.getElementById('btnCloseHelp').addEventListener('click', ()=>{
+    document.getElementById('ovHelp').style.display='none';
+    if(appState==='help') appState='playing';
+  });
+  document.getElementById('btnHelp').addEventListener('click', ()=>{
+    document.getElementById('ovHelp').style.display='flex';
+  });
+  document.getElementById('btnStartWave').addEventListener('click', startWave);
+  document.getElementById('btnRestart').addEventListener('click', ()=>{
+    document.getElementById('ovEnd').style.display='none';
+    appState='playing';
+    resetGame();
+  });
+
+  document.getElementById('btnPause').addEventListener('click', function(){
+    if(appState!=='playing') return;
+    paused = !paused;
+    this.classList.toggle('on', paused);
+    this.textContent = paused ? '▶' : '⏸';
+  });
+  document.getElementById('btnSpeed').addEventListener('click', function(){
+    gameSpeed = gameSpeed===1?2:1;
+    this.textContent = gameSpeed+'×';
+    this.classList.toggle('on', gameSpeed>1);
+  });
+  document.getElementById('btnSound').addEventListener('click', function(){
+    soundOn = !soundOn;
+    this.textContent = soundOn ? '🔊' : '🔇';
+  });
+
+  document.getElementById('tpUpgrade').addEventListener('click', ()=>{
+    if(selectedTower){ upgradeTower(selectedTower); openTowerPopup(selectedTower); refreshHud(); }
+  });
+  document.getElementById('tpSell').addEventListener('click', ()=>{
+    if(selectedTower){ sellTower(selectedTower); closeTowerPopup(); refreshHud(); }
+  });
+
+  window.addEventListener('keydown', (e)=>{
+    if(e.key==='1') armTower('ahorro');
+    if(e.key==='2') armTower('inversion');
+    if(e.key==='3') armTower('planificacion');
+    if(e.key==='4') armTower('emergencia');
+    if(e.key==='5') armTower('educacion');
+    if(e.key==='Escape'){ placingType=null; closeTowerPopup(); renderShop(); }
+    if(e.key===' '){ e.preventDefault(); if(waveState==='prep') startWave(); }
+  });
+
+  setInterval(()=>{
+    if(appState==='playing' && waveState==='active'){
+      document.getElementById('tickerText').textContent = TIPS[Math.floor(Math.random()*TIPS.length)];
+    }
+  }, 9000);
+
+  refreshHud();
+  requestAnimationFrame(loop);
+}
+
+init();
+})();
+</script>
+</body>
+</html>
