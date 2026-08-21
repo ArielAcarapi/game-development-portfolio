@@ -5,7 +5,7 @@
 [![Género](https://img.shields.io/badge/G%C3%A9nero-Arcade_%2F_Educativo-orange?style=flat-square)](#)
 [![Tecnología](https://img.shields.io/badge/Tech-HTML5_%2F_CSS3_%2F_JS-yellow?style=flat-square)](#)
 
-[Haga clic aquí para jugar en línea](https://ArielAcarapi.github.io/game-development-portfolio/02-ecosort/)
+[Haga clic aquí para jugar en línea](https://ArielAcarapi.github.io/game-development-portfolio/EcoSort/)
 
 ---
 
