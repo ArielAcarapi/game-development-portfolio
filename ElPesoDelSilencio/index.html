@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Peso del Silencio</title>
+
+<style>
+
+/* =========================
+   ESTILOS BASE
+========================= */
+
+*{
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    margin:0;
+    background:#080b12;
+    color:white;
+    overflow:hidden;
+}
+
+
+/* CONTENEDOR PRINCIPAL */
+
+#juego{
+    width:100vw;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+
+/* PANTALLAS */
+
+.pantalla{
+    width:90%;
+    max-width:900px;
+    min-height:600px;
+    background:#101722;
+    border:2px solid #26384d;
+    border-radius:15px;
+    padding:30px;
+    box-shadow:0 0 40px rgba(0,0,0,.8);
+}
+
+
+.oculto{
+    display:none;
+}
+
+
+
+/* TITULOS */
+
+h1{
+    text-align:center;
+    color:#8bd3ff;
+    letter-spacing:3px;
+}
+
+
+h2{
+    color:#9fdcff;
+}
+
+
+
+/* BOTONES */
+
+button{
+
+    background:#172b41;
+    border:1px solid #4b8db8;
+    color:white;
+
+    padding:12px 25px;
+
+    margin:10px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    transition:.3s;
+
+}
+
+
+button:hover{
+
+    background:#25638d;
+
+    transform:scale(1.05);
+
+}
+
+
+/* TEXTO */
+
+.texto{
+
+    line-height:1.7;
+
+    font-size:18px;
+
+    color:#d5e4ef;
+
+}
+
+
+
+/* TABLETA */
+
+.tableta{
+
+    width:90%;
+
+    max-width:700px;
+
+    height:450px;
+
+    background:#05070b;
+
+    border:10px solid #252c35;
+
+    border-radius:25px;
+
+    margin:auto;
+
+    padding:20px;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+
+
+.pantalla-tableta{
+
+    height:100%;
+
+    background:#101820;
+
+    border-radius:10px;
+
+    padding:20px;
+
+    position:relative;
+
+    overflow-y:auto;
+
+}
+
+
+
+/* BARRA EMOCIONAL */
+
+
+#barra-container{
+
+    width:100%;
+
+    height:20px;
+
+    background:#222;
+
+    border-radius:20px;
+
+    margin:20px 0;
+
+}
+
+
+#barra{
+
+    width:10%;
+
+    height:100%;
+
+    background:#5cb8ff;
+
+    border-radius:20px;
+
+    transition:1s;
+
+}
+
+
+
+/* ARCHIVOS */
+
+
+.archivos{
+
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:15px;
+
+}
+
+
+.archivo{
+
+    width:150px;
+
+    height:100px;
+
+    background:#182331;
+
+    border:1px solid #456;
+
+    border-radius:10px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    cursor:pointer;
+
+}
+
+
+.archivo:hover{
+
+    background:#27415d;
+
+}
+
+
+
+/* MENSAJES */
+
+.mensaje{
+
+    background:#151f2d;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    margin:10px;
+
+    border-left:4px solid #4b9bd3;
+
+}
+
+
+
+/* EFECTO ERROR */
+
+.error{
+
+    animation:glitch .15s infinite;
+
+}
+
+
+@keyframes glitch{
+
+    0%{
+        transform:translate(2px);
+    }
+
+    50%{
+        transform:translate(-2px);
+    }
+
+    100%{
+        transform:translate(0);
+    }
+
+}
+
+
+
+/* FINAL */
+
+.final{
+
+    text-align:center;
+
+    font-size:22px;
+
+    line-height:2;
+
+}
+
+/* =========================
+   MEJORAS VISUALES
+========================= */
+
+
+/* EFECTO DE PANTALLA ANTIGUA */
+
+.pantalla-tableta::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:
+    repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,.03),
+        rgba(255,255,255,.03) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+
+    pointer-events:none;
+
+}
+
+
+
+/* TITULO DE SISTEMA */
+
+#tituloFase{
+
+    color:#73c8ff;
+
+    border-bottom:1px solid #31485c;
+
+    padding-bottom:10px;
+
+}
+
+
+
+/* ARCHIVOS RECUPERADOS */
+
+.archivo-recuperado{
+
+    background:#102030;
+
+    border:1px solid #56a8d8;
+
+    animation:aparecer .8s;
+
+}
+
+
+
+@keyframes aparecer{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+
+/* NOTIFICACIONES FLOTANTES */
+
+.notificacion{
+
+    position:absolute;
+
+    right:20px;
+
+    top:20px;
+
+    background:#202d3c;
+
+    border-left:4px solid #ff5555;
+
+    padding:15px;
+
+    border-radius:8px;
+
+    animation:flotar 3s infinite;
+
+}
+
+
+
+@keyframes flotar{
+
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+
+    50%{
+
+        transform:translateY(-10px);
+
+    }
+
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+
+}
+
+
+
+/* DISTORSION DIGITAL */
+
+
+.distorsion{
+
+    filter:
+
+    contrast(150%)
+
+    brightness(80%)
+
+    saturate(130%);
+
+}
+
+
+
+
+/* SOBRECARGA DE INFORMACION */
+
+
+.caos{
+
+    animation:caosPantalla .4s infinite;
+
+}
+
+
+
+@keyframes caosPantalla{
+
+
+0%{
+
+transform:translateX(0);
+
+}
+
+
+25%{
+
+transform:translateX(5px);
+
+}
+
+
+
+50%{
+
+transform:translateX(-5px);
+
+}
+
+
+
+75%{
+
+transform:translateX(3px);
+
+}
+
+
+
+100%{
+
+transform:translateX(0);
+
+}
+
+
+}
+
+
+
+
+
+/* ROMPECABEZAS */
+
+
+.pieza{
+
+    width:180px;
+
+    padding:15px;
+
+    background:#182c3d;
+
+    border:2px solid #4d91bd;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    text-align:center;
+
+}
+
+
+
+.pieza.seleccionada{
+
+    background:#275878;
+
+}
+
+
+
+
+/* MENSAJES DEL JUEGO */
+
+
+.dialogo{
+
+
+background:#101b28;
+
+border-radius:10px;
+
+padding:20px;
+
+margin:20px 0;
+
+border-left:5px solid #65b7e8;
+
+font-size:18px;
+
+
+}
+
+
+
+
+
+/* BOTON CONTINUAR */
+
+
+.continuar{
+
+
+display:block;
+
+margin:25px auto;
+
+}
+
+
+
+
+/* ARCHIVO DE AUDIO */
+
+
+.audio{
+
+background:#111923;
+
+padding:30px;
+
+border-radius:15px;
+
+text-align:center;
+
+border:1px solid #8a5555;
+
+}
+
+
+.audio button{
+
+background:#552525;
+
+border-color:#ff7777;
+
+}
+
+
+
+
+/* TRANSICIONES */
+
+
+.transicion{
+
+animation:
+
+entrada 1s;
+
+}
+
+
+@keyframes entrada{
+
+
+from{
+
+opacity:0;
+
+}
+
+
+to{
+
+opacity:1;
+
+}
+
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="juego">
+
+
+<!-- =========================
+     INTRODUCCION
+========================= -->
+
+
+<section id="inicio" class="pantalla">
+
+
+<h1>EL PESO DEL SILENCIO</h1>
+
+
+<div class="texto">
+
+<p>
+Gael tiene 17 años. Vive rodeado de dispositivos rotos,
+cables y componentes electrónicos.
+</p>
+
+
+<p>
+Para él, las redes sociales solo son ruido.
+Problemas exagerados que no tienen nada que ver con la realidad.
+</p>
+
+
+<p>
+Pero una noche encuentra la tableta dañada de su hermana Camila.
+Ella lleva días encerrada en su habitación sin hablar con nadie.
+</p>
+
+
+<p>
+Pensando que es una simple falla técnica,
+Gael decide reparar el dispositivo.
+</p>
+
+
+</div>
+
+
+<center>
+
+<button onclick="iniciarJuego()">
+Reparar tableta
+</button>
+
+</center>
+
+
+</section>
+
+
+
+
+
+<!-- =========================
+     TABLETA
+========================= -->
+
+
+<section id="pantallaJuego" class="pantalla oculto">
+
+
+<h2>
+Sistema de recuperación
+</h2>
+
+
+<div id="barra-container">
+
+<div id="barra"></div>
+
+</div>
+
+
+<div class="tableta">
+
+
+<div class="pantalla-tableta">
+
+
+<h3 id="tituloFase">
+Sistema corrupto
+</h3>
+
+
+
+<div id="contenido">
+
+<div id="historia">
+
+</div>
+
+
+<div id="acciones">
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<!-- =========================
+     FINAL
+========================= -->
+
+
+<section id="final" class="pantalla oculto">
+
+
+<div class="final">
+
+
+<h1>
+Presencia sobre pantallas
+</h1>
+
+
+<p>
+La tableta está reparada.
+</p>
+
+
+<p>
+Pero Gael entiende que ningún mensaje puede arreglar
+lo que una persona necesita escuchar.
+</p>
+
+
+<p>
+Apaga el dispositivo y camina hacia la habitación de Camila.
+</p>
+
+
+<p>
+No tiene respuestas perfectas.
+Solo decide quedarse.
+</p>
+
+
+<button onclick="location.reload()">
+Jugar nuevamente
+</button>
+
+
+</div>
+
+
+</section>
+
+
+</div>
+
+
+
+<script>
+
+// ================================
+// EL PESO DEL SILENCIO
+// JAVASCRIPT DEL JUEGO
+// ================================
+
+
+let fase = 0;
+
+let peso = 10;
+
+let archivosOrdenados = 0;
+
+let errores = 0;
+
+
+
+const inicio = document.getElementById("inicio");
+
+const juego = document.getElementById("pantallaJuego");
+
+const final = document.getElementById("final");
+
+const contenido = document.getElementById("contenido");
+
+const titulo = document.getElementById("tituloFase");
+
+const barra = document.getElementById("barra");
+
+
+
+
+
+function iniciarJuego(){
+
+
+    inicio.classList.add("oculto");
+
+    juego.classList.remove("oculto");
+
+
+    actualizarBarra();
+
+
+    faseUno();
+
+
+}
+
+
+
+
+
+function actualizarBarra(){
+
+
+    barra.style.width = peso + "%";
+
+
+    if(peso > 70){
+
+        barra.style.background="#ff5555";
+
+    }
+
+    else if(peso > 40){
+
+        barra.style.background="#ffaa55";
+
+    }
+
+    else{
+
+        barra.style.background="#5cb8ff";
+
+    }
+
+
+}
+
+
+
+
+
+function aumentarPeso(valor){
+
+
+    peso += valor;
+
+
+    if(peso>100){
+
+        peso=100;
+
+    }
+
+
+    actualizarBarra();
+
+
+}
+
+
+
+
+
+
+
+// =====================================
+// FASE 1
+// LA CHISPA
+// =====================================
+
+
+
+function faseUno(){
+
+
+    fase=1;
+
+
+    titulo.innerHTML="Pase 1: La chispa";
+
+
+
+    contenido.innerHTML=`
+
+    <div class="dialogo">
+
+    La tableta está dañada.
+    Gael encuentra fragmentos de una conversación escolar.
+
+    Debe reconstruir la secuencia correcta.
+
+    </div>
+
+
+    <h3>
+    Ordena los archivos según ocurrieron:
+    </h3>
+
+
+    <div class="archivos">
+
+
+        <div class="archivo pieza" onclick="seleccionar(this,'broma')">
+
+        Comentarios repetidos sobre el dibujo
+
+        </div>
+
+
+
+        <div class="archivo pieza" onclick="seleccionar(this,'inicio')">
+
+        Camila comparte un dibujo
+
+        </div>
+
+
+
+        <div class="archivo pieza" onclick="seleccionar(this,'grupo')">
+
+        Más estudiantes comienzan a participar
+
+        </div>
+
+
+
+    </div>
+
+
+    <button onclick="comprobarOrden()">
+
+    Restaurar memoria
+
+    </button>
+
+    `;
+
+
+
+    window.orden=[];
+
+
+}
+
+
+
+
+function seleccionar(elemento,valor){
+
+
+    if(window.orden.length >= 3){
+
+        return;
+
+    }
+
+
+    elemento.classList.add("seleccionada");
+
+
+    window.orden.push(valor);
+
+
+}
+
+
+
+
+
+function comprobarOrden(){
+
+
+    let correcto=
+
+    window.orden.join(",")
+
+
+    ===
+
+    "inicio,broma,grupo";
+
+
+
+    if(correcto){
+
+
+        aumentarPeso(20);
+
+
+        contenido.innerHTML=`
+
+        <div class="dialogo">
+
+        La primera parte fue recuperada.
+
+        No era una sola broma.
+        Era algo que ocurría constantemente.
+
+        </div>
+
+
+        <button onclick="faseDos()">
+
+        Continuar
+
+        </button>
+
+        `;
+
+
+    }
+
+    else{
+
+
+        errores++;
+
+        aumentarPeso(5);
+
+
+        alert("La secuencia está dañada. Intenta nuevamente.");
+
+        faseUno();
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+// =====================================
+// FASE 2
+// LA ESCALADA
+// =====================================
+
+
+
+function faseDos(){
+
+
+    fase=2;
+
+
+    titulo.innerHTML="Pase 2: La escalada";
+
+
+    contenido.innerHTML=`
+
+    <div class="dialogo">
+
+    La memoria caché contiene demasiados archivos.
+
+    Gael debe eliminar el ruido y recuperar las pruebas.
+
+    </div>
+
+
+    <h3>
+    Selecciona solamente los archivos importantes:
+    </h3>
+
+
+
+    <div class="archivos">
+
+
+    <div class="archivo" onclick="archivo(true,this)">
+
+    Capturas del chat
+
+    </div>
+
+
+
+    <div class="archivo" onclick="archivo(false,this)">
+
+    Publicidad antigua
+
+    </div>
+
+
+
+    <div class="archivo" onclick="archivo(true,this)">
+
+    Audios filtrados
+
+    </div>
+
+
+
+    <div class="archivo" onclick="archivo(false,this)">
+
+    Juegos instalados
+
+    </div>
+
+
+    </div>
+
+
+
+    <button onclick="terminarFaseDos()">
+
+    Continuar recuperación
+
+    </button>
+
+
+    `;
+
+
+    window.correctos=0;
+
+
+
+}
+
+
+
+
+
+function archivo(valor,elemento){
+
+
+    elemento.classList.add("archivo-recuperado");
+
+
+    if(valor){
+
+        window.correctos++;
+
+    }
+
+    else{
+
+        aumentarPeso(5);
+
+    }
+
+
+}
+
+
+
+
+
+
+function terminarFaseDos(){
+
+
+    if(window.correctos===2){
+
+
+        aumentarPeso(30);
+
+
+        contenido.innerHTML=`
+
+        <div class="dialogo">
+
+        La tableta empieza a mostrar señales de saturación.
+
+        Decenas de mensajes aparecen.
+
+        El problema ya no está solo en la pantalla.
+
+        </div>
+
+
+        <button onclick="faseTres()">
+
+        Continuar
+
+        </button>
+
+
+        `;
+
+
+    }
+
+    else{
+
+
+        alert("Faltan archivos importantes.");
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================================
+// FASE 3
+// EL AISLAMIENTO
+// =====================================
+
+
+
+function faseTres(){
+
+
+    fase=3;
+
+
+    titulo.innerHTML="Pase 3: El aislamiento";
+
+
+
+    contenido.innerHTML=`
+
+    <div class="dialogo">
+
+    Gael encuentra borradores de mensajes
+    que Camila nunca envió.
+
+    Debe reconstruir lo que intentaba decir.
+
+    </div>
+
+
+
+    <div class="mensaje">
+
+    "No quiero volver al colegio porque..."
+
+    </div>
+
+
+
+    <button onclick="respuesta(false)">
+
+    Estoy cansada de estudiar
+
+    </button>
+
+
+    <button onclick="respuesta(true)">
+
+    Siento que todos me observan
+
+    </button>
+
+
+    <button onclick="respuesta(false)">
+
+    Quiero cambiar de horario
+
+    </button>
+
+
+
+    `;
+
+
+}
+
+
+
+
+
+
+
+function respuesta(correcta){
+
+
+    if(correcta){
+
+
+        aumentarPeso(30);
+
+
+        archivoFinal();
+
+
+    }
+
+    else{
+
+
+        alert("Ese fragmento no coincide.");
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+// =====================================
+// ARCHIVO FINAL
+// =====================================
+
+
+function archivoFinal(){
+
+
+    titulo.innerHTML="Archivo definitivo";
+
+
+    contenido.innerHTML=`
+
+    <div class="audio">
+
+
+    <h2>
+
+    AUDIO_CAMILA_FINAL.wav
+
+    </h2>
+
+
+    <p>
+
+    El último archivo está desbloqueado.
+
+    </p>
+
+
+
+    <button onclick="escucharAudio()">
+
+    Reproducir audio
+
+    </button>
+
+
+
+    </div>
+
+
+    `;
+
+
+
+}
+
+
+
+
+
+function escucharAudio(){
+
+
+
+    contenido.innerHTML=`
+
+    <div class="dialogo">
+
+
+    La grabación solo contiene una respiración agitada
+    y un llanto silencioso.
+
+
+    <br><br>
+
+
+    Gael comprende que esto no era solo una pantalla.
+
+
+    </div>
+
+
+
+    <button onclick="terminarJuego()">
+
+    Apagar tableta
+
+    </button>
+
+    `;
+
+
+
+}
+
+
+
+
+
+
+
+// =====================================
+// FINAL
+// =====================================
+
+
+
+function terminarJuego(){
+
+
+    juego.classList.add("oculto");
+
+
+    final.classList.remove("oculto");
+
+
+}
+
+
+</script>
+
+
+</body>
+</html>
