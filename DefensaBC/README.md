@@ -64,11 +64,11 @@ Superar las 10 oleadas de amenazas económicas protegiendo el centro financiero 
 
 | Pantalla Principal | Pantalla de Juego |
 | :---: | :---: |
-| ![Pantalla de Inicio](./screenshots/BolsilloInicio.JPG) | ![Gameplay Isométrico](./screenshots/BolsilloJuego.JPG) |
+| ![Pantalla de Inicio](./screenshots/DefensaBCInicio.png) | ![Gameplay Isométrico](./screenshots/DefensaBCJuego.png) |
 
 | Menú de Mantenimiento | Pantalla de Game Over |
 | :---: | :---: |
-| ![Reparación de Torres](./screenshots/BolsilloMejora.JPG) | ![Bancarrota](./screenshots/BolsilloGameover.JPG) |
+| ![Reparación de Torres](./screenshots/DefensaBCMantenimiento.png) | ![Bancarrota](./screenshots/DefensaBCGameOver.png) |
 
 ---
 
